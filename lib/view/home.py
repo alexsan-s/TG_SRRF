@@ -1,39 +1,26 @@
-import numpy
-import time
-import cv2
-from tkinter import *
-import tkinter.messagebox
-root = Tk()
-root.geometry('950x548')
-frame = Frame(root, relief=RIDGE, borderwidth=2)
-frame.pack(fill=BOTH, expand=1)
-root.title('PPS - SRF')
-frame.config(background='white')
-# label = Label(frame, text="PPS - SRF",bg='white',font=('Times 35 bold'))
-# label.pack(side=TOP)
-filename = PhotoImage(file="assets/background/bg.png")
-background_label = Label(frame, image=filename)
-background_label.pack(side=TOP)
+import cv2, PySimpleGUI as sg
+from view import user
 
-menu = Menu(root)
-root.config(menu=menu)
+def screenHome():
+    sg.theme('DarkTeal12')
+    # ! TOOLBAR MENU
+    toolbar_menu = [
+        ['Arquivo', ['Usuário', 'Operador', 'Imagens', 'Sair']],
+        ['Reconhecimento', ['Eigenfaces', 'Fisherface', 'LBPH']]
+    ]
+    # ! LAYOUT
+    layout = [
+        [sg.Menu(toolbar_menu)],
+        [sg.Image(r'background/bg.png')]
+    ]
+    window = sg.Window('Menu', layout, location=(0,0))
 
-
-def Contri():
-    tkinter.messagebox.showinfo("Contribuidores", "\nAlexsander da Silva")
-
-
-def anotherWin():
-    tkinter.messagebox.showinfo(
-        "Sobre", 'SRRF versão v1.0\n Uitilizando\n-OpenCV\n-Numpy\n-Tkinter\n Em Python 3')
-
-subm1 = Menu(menu)
-menu.add_cascade(label="Camera", menu=subm1)
-# subm1.add_command(label="Abrir a camera", command=web)
-
-subm3 = Menu(menu)
-menu.add_cascade(label="Sobre", menu=subm3)
-subm3.add_command(label="SRRF", command=anotherWin)
-subm3.add_command(label="Aluno", command=Contri)
-
-root.mainloop()
+    while True:
+        event, value = window.read(timeout=20)
+        
+        # * Screen main
+        if event == 'Usuário':
+            user.screenUser()
+        if event == 'Sair' or event == sg.WIN_CLOSED:
+            break
+    window.close()

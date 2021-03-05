@@ -8,14 +8,15 @@ lbph = cv2.face.LBPHFaceRecognizer_create()
 
 
 def getImagemcomId():
-    caminhos = [os.path.join('fotos', f) for f in os.listdir('fotos')]
-    #print(caminhos)
+    caminhos = [os.path.join('assets', f) for f in os.listdir('assets')]
+    # print(caminhos)
     faces = []
     ids = []
 
     for caminhoImagem in caminhos:
+        print(caminhoImagem)
         imagemFace = cv2.cvtColor(cv2.imread(caminhoImagem), cv2.COLOR_BGR2GRAY)
-        id = int(os.path.split(caminhoImagem)[-1].split('.')[1])
+        id = int(os.path.split(caminhoImagem)[-1].split('.')[0])
         #print(id)
         ids.append(id)
         faces.append(imagemFace)

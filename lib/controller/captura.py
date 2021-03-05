@@ -10,10 +10,10 @@ def captura():
     camera = cv2.VideoCapture(0)
     amostra = 1
     numeroAmostra = 20
-    nome    = input('Digite seu nome: ')
-    tel     = input('Digite seu telefone: ')
-    createUser(nome, tel)
-    id = readUser(nome)
+    # nome    = input('Digite seu nome: ')
+    # tel     = input('Digite seu telefone: ')
+    # createUser(nome, tel)
+    # id = readUser(nome)
     
 
     largura, altura = 220, 220
@@ -27,19 +27,19 @@ def captura():
 
         for(x, y, l, a,) in facesDetectadas:
             cv2.rectangle(imagem, (x, y), (x+l, y+a), (0, 0, 255), 2)
-            regiao = imagem[y:y+a, x:x + l]
-            regiaoCinzaOlho = cv2.cvtColor(regiao, cv2.COLOR_BGR2GRAY)
-            olhosDetectaqdos = classificadorOlho.detectMultiScale(regiaoCinzaOlho)
-            for(ox, oy, ol, oa) in olhosDetectaqdos:
-                cv2.rectangle(regiao, (ox, oy), (ox+ol, oy+oa), (0, 255, 0), 2)
+            # regiao = imagem[y:y+a, x:x + l]
+            # regiaoCinzaOlho = cv2.cvtColor(regiao, cv2.COLOR_BGR2GRAY)
+            # olhosDetectaqdos = classificadorOlho.detectMultiScale(regiaoCinzaOlho)
+            # for(ox, oy, ol, oa) in olhosDetectaqdos:
+            #     cv2.rectangle(regiao, (ox, oy), (ox+ol, oy+oa), (0, 255, 0), 2)
 
-                if(cv2.waitKey(1) & 0xFF == ord('q')):
-                    if(np.average(imagemCinza) > 110):
-                        imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (largura, altura))
-                        cv2.imwrite("test/pessoa."+str(id)+'.' + str(amostra)+".jpg", 
-                                    imagemFace)
-                        print("[foto " + str(amostra) + " capturada com sucesso")
-                        amostra += 1
+                # if(cv2.waitKey(1) & 0xFF == ord('q')):
+                #     if(np.average(imagemCinza) > 110):
+                #         imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (largura, altura))
+                #         cv2.imwrite("assets/pessoa."+str(id)+'.' + str(amostra)+".jpg", 
+                #                     imagemFace)
+                #         print("[foto " + str(amostra) + " capturada com sucesso")
+                #         amostra += 1
                         
 
         cv2.imshow("SRRF", imagem)
