@@ -3,11 +3,11 @@ import psycopg2
 
 # ! CREATE TABLES
 
-def createUser(name, telefone):
+def createUser(name, telefone, cpf):
     try:
         conf = configuration()
         cur = conf.cursor()
-        sql = "INSERT INTO tb_user(NAME, TELEFONE) VALUES('" + name + "','" + telefone + "');"
+        sql = "INSERT INTO tb_user(NAME, TELEFONE, CPF) VALUES('{}','{}','{}');".format(name, telefone, cpf)
         cur.execute(sql)
         conf.commit()
         conf.close()
@@ -18,10 +18,10 @@ def createUser(name, telefone):
 
 # ! READ TABLES
 
-def readUser(name):
+def readUser(cpf):
     conf = configuration()
     cur = conf.cursor()
-    sql = "SELECT ID FROM TB_USER WHERE NAME = '" + name + "';"
+    sql = "SELECT ID FROM TB_USER WHERE CPF = '" + cpf + "';"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
@@ -30,7 +30,7 @@ def readUser(name):
 def readAllUser():
     conf = configuration()
     cur = conf.cursor()
-    sql = "SELECT ID, NAME, TELEFONE FROM TB_USER;"
+    sql = "SELECT ID, NAME, TELEFONE, CPF FROM TB_USER;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
