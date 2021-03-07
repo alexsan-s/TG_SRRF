@@ -8,6 +8,7 @@ import numpy as np
 def newUser():
     # ! VARIABLES
     i=0
+    id = 0
     camera = cv2.VideoCapture(0)
     classificador = cv2.CascadeClassifier("haarcascade/haarcascade_frontalface_default.xml")
 
@@ -31,7 +32,8 @@ def newUser():
         if event is None or event == 'Cancelar':  
             break
         if event == 'Cadastrar':
-            if createUser(values['INome'], values['ITelefone']) == 1:
+            if createUser(values['INome'], values['ITelefone'], values['ICPF']) == 1:
+                id = readUser(values['ICPF'])
                 window.Element('INome').Update(disabled=True)
                 window.Element('ITelefone').Update(disabled=True)
                 window.Element('image').Update(visible=True)
@@ -45,13 +47,11 @@ def newUser():
             sg.Popup('Captura de face foi cadastrado com sucesso')
             break
 
-        #
-        # TODO: tentar utilizar o reconhecimento facial
-        #
         ret, imagem = camera.read()
         imagemCinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
         facesDetectadas = classificador.detectMultiScale(
             imagemCinza, scaleFactor=1.5, minSize=(150, 150))
+        print(np.average(imagemCinza))
         if ret:
             for(x, y, l, a,) in facesDetectadas:
                 cv2.rectangle(imagem, (x, y), (x+l, y+a), (0, 0, 255), 2)
@@ -59,7 +59,7 @@ def newUser():
                     imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (200, 200))
                     if event == 'Capturar':
                         i = i + 1
-                        cv2.imwrite("assets/pessoa." + str(i)+".jpg", imagemFace)
+                        cv2.imwrite(str(id) + "."+ str(i) +".jpg", imagemFace)
                         window.FindElement('txtCaptura').update(value = 'Fotos capturadas: {}'.format(i))
                         window.FindElement('progressbar').UpdateBar(i)            
         window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())        
@@ -77,7 +77,7 @@ def screenUser():
         ['Arquivo', ['Novo', 'Excluir', 'Sair']],
     ]
     data = readAllUser()
-    header = ['Código','Nome', 'Telefone']
+    header = ['Código','Nome', 'Telefone', 'CPF']
     
     # ! layout
     col_layout = [
