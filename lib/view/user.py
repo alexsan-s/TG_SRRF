@@ -5,11 +5,13 @@ import numpy as np
 #
 # * Function that going to see the screen of new user
 #
+#
 def newUser():
     # ! VARIABLES
-    i=0
     id = 0
-    camera = cv2.VideoCapture(0)
+    count = 0
+    created = False
+    camera = None
     classificador = cv2.CascadeClassifier("haarcascade/haarcascade_frontalface_default.xml")
 
     # ! LAYOUT
@@ -40,35 +42,39 @@ def newUser():
                 window.Element('progressbar').update(0, visible=True)
                 window.FindElement('txtCaptura').update(visible = True)
                 window.Element('Capturar').Update(visible=True)
+                created = True
+                camera  = cv2.VideoCapture(0)
             else:
                 sg.Popup('Falha em cadastrar')
-        if i == 20:
-            window.close()
-            sg.Popup('Captura de face foi cadastrado com sucesso')
-            break
 
-        ret, imagem = camera.read()
-        imagemCinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
-        facesDetectadas = classificador.detectMultiScale(
-            imagemCinza, scaleFactor=1.5, minSize=(150, 150))
-        print(np.average(imagemCinza))
-        if ret:
-            for(x, y, l, a,) in facesDetectadas:
-                cv2.rectangle(imagem, (x, y), (x+l, y+a), (0, 0, 255), 2)
-                if(np.average(imagemCinza) > 110):
-                    imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (200, 200))
-                    if event == 'Capturar':
-                        i = i + 1
-                        cv2.imwrite(str(id) + "."+ str(i) +".jpg", imagemFace)
-                        window.FindElement('txtCaptura').update(value = 'Fotos capturadas: {}'.format(i))
-                        window.FindElement('progressbar').UpdateBar(i)            
-        window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())        
+        if created:
+            if count == 20:
+                window.close()
+                sg.Popup('Captura de face foi cadastrado com sucesso')
+                break
+
+            ret, imagem = camera.read()
+            imagemCinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
+            facesDetectadas = classificador.detectMultiScale(
+                imagemCinza, scaleFactor=1.5, minSize=(150, 150))
+            if ret:
+                for(x, y, l, a,) in facesDetectadas:
+                    cv2.rectangle(imagem, (x, y), (x+l, y+a), (0, 0, 255), 2)
+                    if(np.average(imagemCinza) > 110):
+                        imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (200, 200))
+                        if event == 'Capturar':
+                            count = count + 1
+                            cv2.imwrite("{}.{}.jpg".format(str(id),str(count)), imagemFace)
+                            window.FindElement('txtCaptura').update(value = 'Fotos capturadas: {}'.format(count))
+                            window.FindElement('progressbar').UpdateBar(count)            
+            window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())        
     camera.release()
     window.close()
 
 #
 # *     Function that going to use to see the screen of User
-# TODO: Need create the option of other buttons
+# TODO: Create the function that if right clicked show an options for to do
+# TODO: Update the screen when delete an user or when create a new user
 #
 def screenUser():
 
@@ -96,8 +102,10 @@ def screenUser():
             newUser()
         if event == 'Sair' or event == sg.WIN_CLOSED:
             break
+        if event == 'Excluir':
+            deleteUser(selected_row)
         if event == 'table':
-            selected_row = data[value[event][0]]
+            selected_row = data[value[event][0]][0]
             print(selected_row)
     window.close()
 

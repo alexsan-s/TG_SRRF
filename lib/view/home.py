@@ -25,6 +25,8 @@ def screenHome():
             training.recognitionTraining()
         if event == 'Eigenfaces':
             recognition.eigenfaces()
+        if event == 'LBPH':
+            recognition.lbph()
         if event == 'Fisherface':
             recognition.fisherface()
         if event == 'Sair' or event == sg.WIN_CLOSED:
