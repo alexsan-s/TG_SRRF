@@ -40,7 +40,7 @@ def readAllUser():
 def deleteUser(cod):
     conf = configuration()
     cur = conf.cursor()
-    sql = 'DELETE FROM TB_USER WHERE ID = ' + cod + ";"
+    sql = "DELETE FROM TB_USER WHERE ID = '{}';".format(cod)
     cur.execute(sql)
     conf.commit()
     conf.close()
