@@ -55,7 +55,3 @@ def recognitionTraining():
             sg.Popup('Treinamento realizado com sucesso')
             break
     window.close()
-
-# TODO:
-
-        
