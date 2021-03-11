@@ -26,7 +26,7 @@ def newUser():
         [sg.Button(button_text="Capture", visible=False)],
         
     ]
-    window = sg.Window('New User', layout, size=(952,516))
+    window = sg.Window('New User', layout)
 
 
     while True:
@@ -53,21 +53,21 @@ def newUser():
                 sg.Popup('Capture of face has registered successfully')
                 break
 
-            ret, imagem = camera.read()
-            imagemCinza = cv2.cvtColor(imagem, cv2.COLOR_BGR2GRAY)
+            ret, image = camera.read()
+            imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             facesDetectadas = classificador.detectMultiScale(
-                imagemCinza, scaleFactor=1.5, minSize=(150, 150))
+                imageGray, scaleFactor=1.5, minSize=(150, 150))
             if ret:
                 for(x, y, l, a,) in facesDetectadas:
-                    cv2.rectangle(imagem, (x, y), (x+l, y+a), (0, 0, 255), 2)
-                    if(np.average(imagemCinza) > 110):
-                        imagemFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (200, 200))
+                    cv2.rectangle(image, (x, y), (x+l, y+a), (0, 0, 255), 2)
+                    if(np.average(imageGray) > 110):
+                        imageFace = cv2.resize(imageGray[y:y + a, x:x + l], (200, 200))
                         if event == 'Capture':
                             count = count + 1
-                            cv2.imwrite("{}.{}.jpg".format(str(id),str(count)), imagemFace)
-                            window.FindElement('txtCaptura').update(value = 'Pictures captured: {}'.format(count))
+                            cv2.imwrite("./assets/{}.{}.jpg".format(str(id),str(count)), imageFace)
+                            window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
                             window.FindElement('progressbar').UpdateBar(count)            
-            window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())  
+            window.FindElement('image').Update(data=cv2.imencode('.png', image)[1].tobytes())  
     if(created):      
         camera.release()
     window.close()
@@ -77,29 +77,48 @@ def newUser():
 #
 #
 def capture(selected_row):
-    camera  = cv2.VideoCapture(0)
-    ways = [os.path.join('assets', f) for f in os.listdir('assets')]
-    ids = []
+    pictures        = []
+    camera          = cv2.VideoCapture(0)
+    ways            = [os.path.join('assets', f) for f in os.listdir('assets')]
+    classificador   = cv2.CascadeClassifier("haarcascade/haarcascade_frontalface_default.xml")
     
     layout = [
         [sg.Image(filename='', key='image', visible=True)],
-        [sg.Button(button_text='Capture', key='btnCapture')],
+        [sg.Button(button_text='Capture', key='btnCapture'), sg.Button(button_text='Exit', key='btnExit')],
     ]
     window = sg.Window('New Images', layout)
-
+    
+    # ! Take the last number the user picture
     for imageWay in ways:
-        id = int(os.path.split(imageWay)[-1].split('.')[1])
-        ids.append(id)
-    print(faces)
+        id = int(os.path.split(imageWay)[-1].split('.')[0])
+        if id == selected_row:
+            pictures.append(int(os.path.split(imageWay)[-1].split('.')[1]))
+    pictures = sorted(pictures, key=int)
+    try:
+        lastPicture = pictures[-1] + 1
+    except:
+        lastPicture = 1
+    
+    #
+
     while True:
         event, value = window.read(timeout=20)
-        if(event == sg.WIN_CLOSED):
+        if event == sg.WIN_CLOSED or event == 'btnExit':
             break
-        if(event == 'btnCapture'):
-            print(selected_row)
 
-        ret, imagem = camera.read()
-        window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())  
+        ret, image = camera.read()
+        imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        facesDetectadas = classificador.detectMultiScale(imageGray, scaleFactor=1.5, minSize=(150, 150))
+        if ret:
+            for(x, y, l, a,) in facesDetectadas:
+                if(np.average(imageGray) > 110):
+                    cv2.rectangle(image, (x, y), (x+l, y+a), (0, 0, 255), 2)
+                    imageFace = cv2.resize(imageGray[y:y + a, x:x + l], (200, 200))
+                    if event == 'btnCapture':
+                        cv2.imwrite("./assets/{}.{}.jpg".format(str(selected_row),str(lastPicture)), imageFace)
+                        lastPicture = lastPicture + 1
+                        sg.Popup('Capture of face has registered successfully')
+        window.FindElement('image').Update(data=cv2.imencode('.png', image)[1].tobytes())  
     window.close()
 
 
