@@ -18,7 +18,7 @@ def eigenfaces():
     detectorFace = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_default.xml')
     reconhecedor = cv2.face.EigenFaceRecognizer_create()
     reconhecedor.read("classifierEigen.yml")
-    largura, altura = 220, 220
+    largura, altura = 200, 200
     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
     camera = cv2.VideoCapture(0)
     user = readAllUser()
@@ -63,7 +63,7 @@ def fisherface():
     detectorFace = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_default.xml')
     reconhecedor = cv2.face.EigenFaceRecognizer_create()
     reconhecedor.read("classifierFisher.yml")
-    largura, altura = 220, 220
+    largura, altura = 200, 200
     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
     camera = cv2.VideoCapture(0)
     user = readAllUser()
@@ -106,7 +106,7 @@ def lbph():
     detectorFace = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_default.xml')
     reconhecedor = cv2.face.LBPHFaceRecognizer_create()
     reconhecedor.read("classifierLBPH.yml")
-    largura, altura = 220, 220
+    largura, altura = 200, 200
     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
     camera = cv2.VideoCapture(0)
     user = readAllUser()
