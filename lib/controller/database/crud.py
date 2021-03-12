@@ -36,6 +36,15 @@ def readAllUser():
     conf.close()
     return rows
 
+def readLogin(login, password):
+    conf = configuration()
+    cur = conf.cursor()
+    sql = "SELECT ID FROM TB_OPERATOR WHERE LOGIN = '{}' AND PASSWORD = '{}' AND INACTIVE = 0;".format(login, password)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
 # ! DROP TABLE
 def deleteUser(cod):
     conf = configuration()

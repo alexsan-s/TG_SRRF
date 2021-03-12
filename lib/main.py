@@ -1,4 +1,4 @@
-from view import home as hm
+from view import login as l
 
-# * Begin o the code
-hm.screenHome()
+# * Begin of the code
+l.login()
