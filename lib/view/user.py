@@ -26,7 +26,7 @@ def newUser():
         [sg.Button(button_text="Capture", visible=False)],
         
     ]
-    window = sg.Window('New User', layout)
+    window = sg.Window('New User', layout, margin=(40,40))
 
 
     while True:

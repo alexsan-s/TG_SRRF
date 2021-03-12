@@ -13,7 +13,7 @@ def screenHome():
         [sg.Menu(toolbar_menu)],
         [sg.Image(r'background/bg.png')]
     ]
-    window = sg.Window('Menu', layout, location=(0,0)).Finalize()
+    window = sg.Window('Menu', layout).Finalize()
     window.Maximize()
 
     while True:
