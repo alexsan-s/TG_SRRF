@@ -7,7 +7,7 @@ def importData():
     layout = [
         [sg.Text("Choose what do you want to import"), sg.InputCombo(['Operator', 'Controller'], key='Combo')],
         [sg.Text('Chose the file'), sg.InputText(key='TXT_PATH'), sg.FileBrowse()],
-        [sg.Button(button_text='Import')]
+        [sg.Button(button_text='Import')],
     ]
     window = sg.Window('Import', layout).Finalize()
     window.Maximize()
@@ -16,7 +16,8 @@ def importData():
         event, value = window.read()
 
         if event == 'Import':
-            importDataXLSX.importXLSX(value['Combo'], value['TXT_PATH'] )
+            msg = importDataXLSX.importXLSX(value['Combo'], value['TXT_PATH'])
+            sg.Print(msg)
 
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
