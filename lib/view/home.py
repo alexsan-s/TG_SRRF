@@ -1,11 +1,11 @@
 import cv2, PySimpleGUI as sg
-from view import user, training, recognition
+from view import user, training, recognition, importData
 
 def screenHome():
     # sg.theme('DarkTeal12')
     # ! TOOLBAR MENU
     toolbar_menu = [
-        ['File', ['User', 'Operator', 'Images', 'Training', 'Exit']],
+        ['File', ['User', 'Operator', 'Images', 'Training','Import Data', 'Exit']],
         ['Recognition', ['Eigenfaces', 'Fisherface', 'LBPH']]
     ]
     # ! LAYOUT
@@ -24,6 +24,8 @@ def screenHome():
             user.screenUser()
         if event == 'Training':
             training.recognitionTraining()
+        if event == 'Import Data':
+            importData.importData()
         if event == 'Eigenfaces':
             recognition.eigenfaces()
         if event == 'LBPH':

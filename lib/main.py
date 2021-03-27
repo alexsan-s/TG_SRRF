@@ -1,4 +1,5 @@
-from view import login as l
-
+# from view import home
+from view import importData
 # * Begin of the code
-l.login()
+# home.screenHome()
+importData.importData()
