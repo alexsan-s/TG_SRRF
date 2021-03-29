@@ -1,4 +1,5 @@
 import PySimpleGUI as sg
+import hashlib
 from controller.database.crud import *
 from view import home
 
@@ -32,7 +33,8 @@ def login():
 #
 def searchLogin(value):
     try:
-        row = readLogin(value['ILogin'], value['IPassword'])
+        pass_hash = hashlib.sha1(value['IPassword'].encode('utf-8')).hexdigest()
+        row = readLogin(value['ILogin'], pass_hash)
         if not row:
             return 0
         else:
