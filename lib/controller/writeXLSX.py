@@ -5,7 +5,6 @@ import tkinter.filedialog
 def writeXLSX(typeXLSX):    
     sourcePath = filedialog.askdirectory()
 
-    print(sourcePath)
     wb = Workbook()
     ws = wb.active
 
@@ -22,6 +21,12 @@ def writeXLSX(typeXLSX):
         ws['A1'] = 'PRODUCT'
         ws['B1'] = 'DESCRIPTION'
         ws['C1'] = 'INACTIVE'
+        fileName = '{}/ImportProduct.xlsx'.format(sourcePath)
+    if typeXLSX == 'Client':
+        ws['A1'] = 'NAME'
+        ws['B1'] = 'EMAIL'
+        ws['C1'] = 'TELEFONE'
+        ws['D1'] = 'CPF'
         fileName = '{}/ImportClient.xlsx'.format(sourcePath)
 
     wb.save(fileName)

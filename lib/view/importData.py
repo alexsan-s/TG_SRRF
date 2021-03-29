@@ -5,12 +5,12 @@ from controller import importXLSX, writeXLSX
 def importData():
     # ! TOOLBAR MENU
     toolbar_menu = [
-        ['Models', ['Operator', 'Product']],
+        ['Models', ['Operator', 'Product', 'Client']],
     ]
     # ! LAYOUT
     layout = [
         [sg.Menu(toolbar_menu)],
-        [sg.Text("Choose what do you want to import"), sg.InputCombo(['Operator', 'Product'], key='Combo')],
+        [sg.Text("Choose what do you want to import"), sg.InputCombo(['Operator', 'Product', 'Client'], key='Combo')],
         [sg.Text('Chose the file'), sg.InputText(key='TXT_PATH'), sg.FileBrowse()],
         [sg.Button(button_text='Import')],
     ]
@@ -23,6 +23,8 @@ def importData():
         if event == "Operator":
             writeXLSX.writeXLSX(event)
         if event == "Product":
+            writeXLSX.writeXLSX(event)
+        if event == "Client":
             writeXLSX.writeXLSX(event)
 
         if event == 'Import':

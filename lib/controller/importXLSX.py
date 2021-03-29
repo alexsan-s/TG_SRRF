@@ -13,15 +13,15 @@ def importXLSX(table, file_path):
             return importOperator(sheet)
         if table == 'Product':
             return importProduct(sheet)
+        if table == 'Client':
+            return importClient(sheet)
     except:
         return 'Fail to read the file XLSX'
 
 
 def importOperator(sheet):
     try:
-        column = 9
         row = 2
-        valueData = ''
         msg = ''
 
         conf = configurationElephant()
@@ -85,7 +85,8 @@ def importOperator(sheet):
                     password = 'Ch@nge123'
                 pass_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
 
-                # 7
+            # 7
+            if error == 0:
                 inactive    = sheet.cell(row=y, column = 8).value
                 if inactive == None:
                     inactive = 0
@@ -124,8 +125,7 @@ def importProduct(sheet):
 
             # 1
             product = sheet.cell(row=y, column= 1).value
-            if product
-             == None:
+            if product == None:
                 break
             
             # 2
@@ -149,6 +149,84 @@ def importProduct(sheet):
                 except:
                     msg += 'Error row {}: The product[{}] was not registered with successful.\n'.format(str(y), product)
         fileName = "ImportProduct{}.txt".format(str(datetime.now()))
+        file = open(fileName, "w") 
+        file.write(str(msg))
+        file.close
+        conf.close()
+        return msg
+    except Exception:
+        msg = 'Fail to read de file XSLX'
+        return msg
+
+def importClient(sheet):
+    try:
+        row = 2
+        msg = ''
+
+        conf = configurationElephant()
+        cur = conf.cursor()
+
+        # Pass for all columns
+        for y in range(row, 1000):
+            error = 0
+
+            # 1
+            name = sheet.cell(row=y, column= 1).value
+            if name == None:
+                break
+
+            # 2
+            if error == 0:
+                email       = sheet.cell(row=y, column = 2).value
+                if email == None:
+                    msg += 'Error row {}: The cell email[{}] wasnt preench.\n'.format(str(y), email)
+                    error += 1
+                else:
+                    sql = "SELECT EMAIL FROM CLIENT WHERE EMAIL = '{}'".format(email)
+                    cur.execute(sql)
+                    rows = cur.fetchall()
+                    if rows:
+                        msg += 'Error row {}: The email[{}] was exists in the database and cannot register.\n'.format(str(y), email)
+                        error += 1
+            
+            # 3
+            if error == 0:
+                telefone    = sheet.cell(row=y, column = 3).value
+                if email == None:
+                    msg += 'Error row {}: The cell telefone[{}] wasnt preench.\n'.format(str(y), telefone)
+                    error += 1
+                else:
+                    sql = "SELECT TELEFONE FROM CLIENT WHERE TELEFONE = '{}'".format(telefone)
+                    cur.execute(sql)
+                    rows = cur.fetchall()
+                    if rows:
+                        msg += 'Error row {}: The telefone[{}] was exists in the database and cannot register.\n'.format(str(y), telefone)
+                        error += 1
+
+            # 4
+            cpf         = sheet.cell(row=y, column = 4).value
+            if cpf == None:
+                msg += 'Error row {}: The cell CPF[{}] wasnt preech.\n'.format(str(y), cpf)
+                error += 1
+            else:
+                sql = "SELECT CPF FROM CLIENT WHERE CPF = '{}'".format(cpf)
+                cur.execute(sql)
+                rows = cur.fetchall()
+                if rows:
+                    msg += 'Error rpw {}: The CPF[{}] was exists in the database and cannot register.\n'.format(str(y), cpf)
+                    error += 1
+
+            if error == 0:
+                sql = "INSERT INTO CLIENT(NAME, EMAIL, TELEFONE, CPF) VALUES('{}', '{}', '{}', '{}')".format(name, email, telefone, cpf)
+                #debug
+                # print(sql) 
+                try:
+                    cur.execute(sql)
+                    conf.commit()
+                    msg += 'Ok row {}: The client[{}] has been successfully registered.\n'.format(str(y), name)
+                except:
+                    msg += 'Error row {}: The client[{}] could not be registered.\n'.format(str(y), name)
+        fileName = "ImportClient_{}.txt".format(str(datetime.now()))
         file = open(fileName, "w") 
         file.write(str(msg))
         file.close
