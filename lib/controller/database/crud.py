@@ -37,9 +37,9 @@ def readAllUser():
     return rows
 
 def readLogin(login, password):
-    conf = configuration()
+    conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT ID FROM TB_OPERATOR WHERE LOGIN = '{}' AND PASSWORD = '{}' AND INACTIVE = 0;".format(login, password)
+    sql = "SELECT PK_OPERATOR FROM OPERATOR WHERE LOGIN = '{}' AND PASS_HASH = '{}' AND INACTIVE = 0;".format(login, password)
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
