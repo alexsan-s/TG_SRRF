@@ -4,10 +4,10 @@ import numpy as np
 import os
 
 #
-# * Function that going to see the screen of new user
+# * Function that going to see the screen of user
 #
 #
-def newUser():
+def clientNewOld(pk_cliente = None):
     # ! VARIABLES
     id = 0
     count = 0
@@ -15,38 +15,99 @@ def newUser():
     camera = None
     classificador = cv2.CascadeClassifier("haarcascade/haarcascade_frontalface_default.xml")
 
+    if pk_cliente != None:
+        data = readClientByPk(pk_cliente)
+        name = data[0][1]
+        cpf = data[0][2]
+        rg = data[0][3]
+        birth = data[0][4]
+        sex = data[0][5]
+        if sex == 'M':
+            sexM = True
+            sexF = False
+            sexI = False
+        elif sex == 'F':
+            sexM = False
+            sexF = True
+            sexI = False
+        else:
+            sexM = False
+            sexF = False
+            sexI = True
+        email = data[0][6]
+        cep = data[0][7]
+        address = data[0][8]
+        number = data[0][9]
+        district = data[0][10]
+        city = data[0][11]
+        state = data[0][12]
+        telefone = data[0][13]
+        cell = data[0][14]
+        btnInsertUpdate = 'Update'
+        title = 'Edit client {}'.format(name)
+    else:
+        name = ''
+        cpf = ''
+        rg = ''
+        birth = ''
+        sexM = False
+        sexF = False
+        sexI = True
+        email = ''
+        cep = ''
+        address = ''
+        number = ''
+        district = ''
+        city = ''
+        state = ''
+        telefone = ''
+        cell = ''
+        btnInsertUpdate = 'Register'
+        title = 'New client'
+
     # ! LAYOUT
     layout = [
-        [sg.Text("Name", size=(10,1)), sg.Input('', key = 'IName')],
-        [sg.Text("Telefone", size=(10,1)), sg.Input('', key = 'ITelefone')],
-        [sg.Text("CPF", size=(10,1)), sg.Input('', key = 'ICPF')],
-        [sg.Button(button_text="Register"), sg.Exit(button_text="Cancel")],
+        [sg.Text("Name", size=(10,1)), sg.Input(name, key = 'IName')],
+        [sg.Text("CPF", size=(10,1)), sg.Input(cpf, key = 'ICPF')],
+        [sg.Text("RG", size=(10,1)), sg.Input(rg, key = 'IRG')],
+        [sg.Text("Birth", size=(10,1)), sg.Input(birth, key= 'IDate'),sg.CalendarButton("Pick date")],
+        [sg.Text("Sex", size=(10,1)), sg.Radio("Masc", "RADIO1", key='R1', default=sexM), sg.Radio("Fem", "RADIO1", key='R2', default=sexF), sg.Radio("Undefined", "RADIO1", key='R3', default=sexI)],
+        [sg.Text("Email", size=(10,1)), sg.Input(email, key = 'IEmail')],
+        [sg.Frame(layout=[
+            [sg.Text("Cep", size=(10,1)), sg.Input(cep, key = 'ICep')],
+            [sg.Text("Adrress", size=(10,1)), sg.Input(address, key = 'IAdrress')],
+            [sg.Text("Number", size=(10,1)), sg.Input(number, key = 'INumber')],
+            [sg.Text("District", size=(10,1)), sg.Input(district, key = 'IDistrict')],
+            [sg.Text("City", size=(10,1)), sg.Input(city, key = 'ICity')],
+            [sg.Text("State", size=(10,1)), sg.Input(state, key = 'IState')],
+        ], title = "Address")],
+        [sg.Frame(layout=[
+            [sg.Text("Telefone", size=(10,1)), sg.Input(telefone, key = 'ITelefone')],
+            [sg.Text("Cell", size=(10,1)), sg.Input(cell, key = 'ICell')],
+        ], title = "Contact")],
+        [sg.HorizontalSeparator()],
+        [sg.Button(button_text=btnInsertUpdate), sg.Exit(button_text="Cancel")],
         [sg.Image(filename='', key='image', visible=False)],
         [sg.ProgressBar(20, orientation='h', size=(20, 20), key='progressbar', visible=False), sg.Text('Fotos capturadas: 0', key='txtCapture', size=(20,1), visible=False)], 
-        [sg.Button(button_text="Capture", visible=False)],
-        
+        [sg.Button(button_text="Capture", visible=False)],    
+    
     ]
-    window = sg.Window('New User', layout, margin=(40,40))
+    window = sg.Window(title, layout)
 
 
     while True:
         event, values = window.Read(timeout=20, timeout_key='timeout')
         if event is None or event == 'Cancel':  
             break
+        
         if event == 'Register':
-            if createUser(values['IName'], values['ITelefone'], values['ICPF']) == 1:
-                id = readUser(values['ICPF'])
-                window.Element('IName').Update(disabled=True)
-                window.Element('ITelefone').Update(disabled=True)
-                window.Element('image').Update(visible=True)
-                window.Element('progressbar').update(0, visible=True)
-                window.FindElement('txtCapture').update(visible = True)
-                window.Element('Capture').Update(visible=True)
-                created = True
-                camera  = cv2.VideoCapture(0)
+            if createClient(values) == 1:
+                window.close()
+                capture(2)
             else:
                 sg.Popup('Fail in register')
-
+        if event == 'Update':
+            updateClient(values, pk_cliente)
         if created:
             if count == 20:
                 window.close()
@@ -123,7 +184,7 @@ def capture(selected_row):
 
 
 #
-# *     Function that going to use to see the screen of User
+# *     Function that going to use to see the screen of CLIENT
 # TODO: Create the function that if right clicked show an options for to do
 # TODO: Update the screen when delete an user or when create a new user
 #
@@ -131,35 +192,47 @@ def screenUser():
 
     # ! toolbar
     toolbar_menu = [
-        ['File', ['New', 'Delete', 'Exit']],
+        ['File', ['New', 'Edit', 'Delete', 'Exit']],
         ['Insert', ['Capture']],
     ]
-    data = readAllUser()
-    header = ['Code','Name', 'Telefone', 'CPF']
+    data = readAllClient()
+    header = ['Code','Name', 'Email']
     
     # ! layout
-    col_layout = [
-        [sg.Table(values=data, headings=header, auto_size_columns=True, justification='left', key='tbUser', enable_events=True)]
-    ]
+    if not data:
+        dataRegister = [
+            [sg.Text(text='No register')]
+        ]
+    else:
+        dataRegister = [
+            [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=100, justification='left', key='tbClient', enable_events=True)]
+        ]
+
     layout = [
         [sg.Menu(toolbar_menu)],
-        [sg.Column(col_layout)]
+        [sg.Column(dataRegister)],
+        [sg.Frame(title='Filter', layout=[
+            [sg.Text(text='Name'), sg.Input('', key='IName'), sg.Text(text='Email'), sg.Input('', key='IEmail')],
+            [sg.Button(button_text='Search')]
+        ])]
     ]
-    window = sg.Window('User', layout)
+    window = sg.Window('User', layout,size=(800,500))
 
     while True:
         event, value = window.read(timeout=20)
         
         if event == 'New':
-            newUser()
+            clientNewOld()
+        if event == 'Edit':
+            clientNewOld(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
         if event == 'Delete':
-            deleteUser(selected_row)
+            print()
+            if deleteClient(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0]) == 1:
+                data = readAllClient()
+                window.Element('tbClient').update(values=data)
         if event == 'Capture':
             capture(selected_row)
-        if event == 'tbUser':
-            selected_row = data[value[event][0]][0]
-            print(selected_row)
     window.close()
 

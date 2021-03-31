@@ -105,7 +105,7 @@ def lbph():
 
     detectorFace = cv2.CascadeClassifier('haarcascade/haarcascade_frontalface_default.xml')
     reconhecedor = cv2.face.LBPHFaceRecognizer_create()
-    reconhecedor.read("classifierLBPH.yml")
+    reconhecedor.read("classifier/classifierLBPH.yml")
     largura, altura = 200, 200
     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
     camera = cv2.VideoCapture(0)
