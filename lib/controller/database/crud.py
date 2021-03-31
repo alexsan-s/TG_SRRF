@@ -25,6 +25,8 @@ def createClient(values):
     except:
         return 0
 
+def createOperator(values):
+    sql = 'INSERT INTO OPERATOR(NAME, TELEFONE, CPF, EMAIL, LOGIN, PASSWORD, PASS_HASH, INACTIVE) VALUES('{}', {}, {}, '{}', '{}', '{}', '{}', {})".format(name, telefone, cpf, email, login, password, pass_hash, inactive)'
 # ! UPDATE TABLES
 
 def updateClient(values, pk_client):
@@ -48,10 +50,19 @@ def updateClient(values, pk_client):
 
 # ! READ TABLES
 
-def readClientByPk(pk_cliente):
+def readClientByPk(pk_client):
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT * FROM CLIENT WHERE PK_CLIENT = {};".format(pk_cliente)
+    sql = "SELECT * FROM CLIENT WHERE PK_CLIENT = {};".format(pk_client)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
+def readOperatorByPk(pk_operator):
+    conf = configurationElephant()
+    cur = conf.cursor()
+    sql = "SELECT * FROM OPERATOR WHERE PK_OPERATOR = {};".format(pk_operator)
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
@@ -84,6 +95,15 @@ def readAllClient():
     conf = configurationElephant()
     cur = conf.cursor()
     sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY PK_CLIENT;"
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
+def readAllOperator():
+    conf = configurationElephant()
+    cur = conf.cursor()
+    sql = "SELECT PK_OPERATOR, NAME, EMAIL FROM OPERATOR ORDER BY PK_OPERATOR;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
