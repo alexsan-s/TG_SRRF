@@ -7,7 +7,7 @@ import os
 # * Function that going to see the screen of client
 #
 #
-def clientNewOld(pk_cliente = None):
+def clientNewOld(pk_client = None):
     # ! VARIABLES
     id = 0
     count = 0
@@ -15,8 +15,8 @@ def clientNewOld(pk_cliente = None):
     camera = None
     classificador = cv2.CascadeClassifier("haarcascade/haarcascade_frontalface_default.xml")
 
-    if pk_cliente != None:
-        data = readClientByPk(pk_cliente)
+    if pk_client != None:
+        data = readClientByPk(pk_client)
         name = data[0][1]
         cpf = data[0][2]
         rg = data[0][3]
@@ -108,7 +108,7 @@ def clientNewOld(pk_cliente = None):
             else:
                 sg.Popup('Fail in register')
         if event == 'Update':
-            updateClient(values, pk_cliente)
+            updateClient(values, pk_client)
         if created:
             if count == 20:
                 window.close()
@@ -233,7 +233,6 @@ def screenClient():
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
         if event == 'Delete':
-            print()
             if deleteClient(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0]) == 1:
                 data = readAllClient()
                 window.Element('tbClient').update(values=data)
