@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 #
-# * Function that going to see the screen of user
+# * Function that going to see the screen of client
 #
 #
 def clientNewOld(pk_cliente = None):
@@ -67,12 +67,13 @@ def clientNewOld(pk_cliente = None):
 
     # ! LAYOUT
     layout = [
-        [sg.Text("Name", size=(10,1)), sg.Input(name, key = 'IName')],
+        [sg.Text("Name", size=(10,1), key='lblName'), sg.Input(name, key = 'IName')],
+        [sg.Text('',size=(20,1), key='lblErrorName', visible=False)],
         [sg.Text("CPF", size=(10,1)), sg.Input(cpf, key = 'ICPF')],
         [sg.Text("RG", size=(10,1)), sg.Input(rg, key = 'IRG')],
         [sg.Text("Birth", size=(10,1)), sg.Input(birth, key= 'IDate'),sg.CalendarButton("Pick date")],
         [sg.Text("Sex", size=(10,1)), sg.Radio("Masc", "RADIO1", key='R1', default=sexM), sg.Radio("Fem", "RADIO1", key='R2', default=sexF), sg.Radio("Undefined", "RADIO1", key='R3', default=sexI)],
-        [sg.Text("Email", size=(10,1)), sg.Input(email, key = 'IEmail')],
+        [sg.Text("Email", size=(10,1), key='lblEmail'), sg.Input(email, key = 'IEmail')],
         [sg.Frame(layout=[
             [sg.Text("Cep", size=(10,1)), sg.Input(cep, key = 'ICep')],
             [sg.Text("Adrress", size=(10,1)), sg.Input(address, key = 'IAdrress')],
@@ -149,7 +150,7 @@ def capture(selected_row):
     ]
     window = sg.Window('New Images', layout)
     
-    # ! Take the last number the user picture
+    # ! Take the last number the client picture
     for imageWay in ways:
         id = int(os.path.split(imageWay)[-1].split('.')[0])
         if id == selected_row:
@@ -186,9 +187,9 @@ def capture(selected_row):
 #
 # *     Function that going to use to see the screen of CLIENT
 # TODO: Create the function that if right clicked show an options for to do
-# TODO: Update the screen when delete an user or when create a new user
+# TODO: Update the screen when delete an client or when create a new client
 #
-def screenUser():
+def screenClient():
 
     # ! toolbar
     toolbar_menu = [
@@ -212,19 +213,23 @@ def screenUser():
         [sg.Menu(toolbar_menu)],
         [sg.Column(dataRegister)],
         [sg.Frame(title='Filter', layout=[
-            [sg.Text(text='Name'), sg.Input('', key='IName'), sg.Text(text='Email'), sg.Input('', key='IEmail')],
-            [sg.Button(button_text='Search')]
+            [sg.InputCombo(['Name', 'Cpf','Rg','Birth','Sex','Email','Cep','Address','Number','District','City','State','Telefone','Cell'], key='cbmFilter', default_value = 'Name'), sg.Input('', key='lblInput'), sg.CalendarButton("Pick date", key='btnCalendar', disabled=True, format='%Y-%m-%d')],
+            [sg.Button(button_text='Search'), sg.Button(button_text='Clear')]
         ])]
     ]
-    window = sg.Window('User', layout,size=(800,500))
+    window = sg.Window('Client', layout,size=(800,500))
 
     while True:
         event, value = window.read(timeout=20)
         
         if event == 'New':
             clientNewOld()
+            data = readAllClient()
+            window.Element('tbClient').update(values=data)
         if event == 'Edit':
             clientNewOld(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
+            data = readAllClient()
+            window.Element('tbClient').update(values=data)
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
         if event == 'Delete':
@@ -234,5 +239,15 @@ def screenUser():
                 window.Element('tbClient').update(values=data)
         if event == 'Capture':
             capture(selected_row)
+        if event == 'Search':
+                data = readClientFilter(value['cbmFilter'], value['lblInput'])
+                window.Element('tbClient').update(values=data)
+        if event == 'Clear':
+            data = readAllClient()
+            window.Element('tbClient').update(values=data)
+        if value['cbmFilter'] == 'Birth':
+            window.Element('btnCalendar').Update(disabled=False)
+        else:
+            window.Element('btnCalendar').Update(disabled=True)
     window.close()
 
