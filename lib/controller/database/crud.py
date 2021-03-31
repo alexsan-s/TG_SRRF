@@ -13,6 +13,9 @@ def createClient(values):
             IRadio = "F" 
         else: 
             IRadio = "I"
+        hasCpf = readClientByCpf(values["ICPF"])
+        if hasCpf:
+            return 0
         sql = """INSERT INTO CLIENT(NAME, CPF, RG, BIRTH, SEX, EMAIL, CEP, ADDRESS, NUMBER, DISTRICT, CITY, STATE, TELEFONE, CELL) VALUES('{}','{}','{}','{}','{}','{}','{}','{}',{},'{}','{}','{}','{}','{}');""".format(values['IName'],values['ICPF'],values['IRG'],values['IDate'],IRadio,values['IEmail'], values['ICep'],values['IAdrress'],values['INumber'],values['IDistrict'],values['ICity'],values['IState'],values['ITelefone'],values['ICell'])
         cur.execute(sql)
         conf.commit()
@@ -54,19 +57,33 @@ def readClientByPk(pk_cliente):
     conf.close()
     return rows
 
-def readUser(cpf):
+def readClientByCpf(cpf):
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT ID FROM CLIENT WHERE CPF = '" + cpf + "';"
+    sql = "SELECT PK_CLIENT FROM CLIENT WHERE CPF = '" + cpf + "';"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
-    return rows[0][0]
+    return rows
+
+def readClientFilter(table, filter):
+    conf = configurationElephant()
+    cur = conf.cursor()
+    if table == 'Birth':
+        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = '{}';".format(table, filter)
+    elif table == 'Number':
+        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = {};".format(table, filter)
+    else:
+        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} LIKE '%{}%';".format(table, filter)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
 
 def readAllClient():
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT;"
+    sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY PK_CLIENT;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
