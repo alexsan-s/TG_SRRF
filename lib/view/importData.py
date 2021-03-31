@@ -1,5 +1,4 @@
 import cv2, PySimpleGUI as sg
-from view import user, training, recognition
 from controller import importXLSX, writeXLSX
 
 def importData():

@@ -1,5 +1,5 @@
 import cv2, PySimpleGUI as sg
-from view import user, training, recognition, importData
+from view import client, training, recognition, importData
 from controller.toolbar import toolbarMenu
 
 def screenHome():
@@ -17,8 +17,8 @@ def screenHome():
         event, value = window.read()
         
         # * Screen main
-        if event == 'User':
-            user.screenUser()
+        if event == 'Client':
+            client.screenClient()
         if event == 'Training':
             training.recognitionTraining()
         if event == 'Import Data':
