@@ -138,7 +138,7 @@ def readAllClient():
 def readAllOperator():
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT PK_OPERATOR, NAME, EMAIL FROM OPERATOR ORDER BY PK_OPERATOR;"
+    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR ORDER BY PK_OPERATOR;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
