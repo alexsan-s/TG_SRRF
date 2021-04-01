@@ -71,7 +71,7 @@ def clientNewOld(pk_client = None):
         [sg.Text('',size=(20,1), key='lblErrorName', visible=False)],
         [sg.Text("CPF", size=(10,1)), sg.Input(cpf, key = 'ICPF')],
         [sg.Text("RG", size=(10,1)), sg.Input(rg, key = 'IRG')],
-        [sg.Text("Birth", size=(10,1)), sg.Input(birth, key= 'IDate'),sg.CalendarButton("Pick date")],
+        [sg.Text("Birth", size=(10,1)), sg.Input(birth, key= 'IDate'),sg.CalendarButton("Pick date", format='%Y-%m-%d')],
         [sg.Text("Sex", size=(10,1)), sg.Radio("Masc", "RADIO1", key='R1', default=sexM), sg.Radio("Fem", "RADIO1", key='R2', default=sexF), sg.Radio("Undefined", "RADIO1", key='R3', default=sexI)],
         [sg.Text("Email", size=(10,1), key='lblEmail'), sg.Input(email, key = 'IEmail')],
         [sg.Frame(layout=[
