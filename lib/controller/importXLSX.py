@@ -171,13 +171,48 @@ def importClient(sheet):
             error = 0
 
             # 1
-            name = sheet.cell(row=y, column= 1).value
+            name        = sheet.cell(row=y, column= 1).value
             if name == None:
                 break
 
             # 2
             if error == 0:
-                email       = sheet.cell(row=y, column = 2).value
+                cpf       = sheet.cell(row=y, column = 2).value
+                if cpf == None:
+                    msg += 'Error row {}: The cell cpf[{}] wasnt preench.\n'.format(str(y), cpf)
+                    error += 1
+                else:
+                    sql = "SELECT CPF FROM CLIENT WHERE CPF = '{}'".format(cpf)
+                    cur.execute(sql)
+                    rows = cur.fetchall()
+                    if rows:
+                        msg += 'Error row {}: The cpf[{}] was exists in the database and cannot register.\n'.format(str(y), cpf)
+                        error += 1
+
+            # 3
+            if error == 0:
+                rg       = sheet.cell(row=y, column = 3).value
+                if rg == None:
+                    msg += 'Error row {}: The cell rg[{}] wasnt preench.\n'.format(str(y), rg)
+                    error += 1
+                else:
+                    sql = "SELECT RG FROM CLIENT WHERE RG = '{}'".format(rg)
+                    cur.execute(sql)
+                    rows = cur.fetchall()
+                    if rows:
+                        msg += 'Error row {}: The rg[{}] was exists in the database and cannot register.\n'.format(str(y), rg)
+                        error += 1
+                
+            # 4
+            birth       = sheet.cell(row=y, column= 4).value
+            
+            # 5
+            sex         = sheet.cell(row=y, column= 5).value
+            
+
+            # 6
+            if error == 0:
+                email   = sheet.cell(row=y, column = 6).value
                 if email == None:
                     msg += 'Error row {}: The cell email[{}] wasnt preench.\n'.format(str(y), email)
                     error += 1
@@ -188,10 +223,28 @@ def importClient(sheet):
                     if rows:
                         msg += 'Error row {}: The email[{}] was exists in the database and cannot register.\n'.format(str(y), email)
                         error += 1
+                    
+            # 7
+            cep         = sheet.cell(row=y, column= 7).value
             
-            # 3
+            # 8
+            address     = sheet.cell(row=y, column= 8).value
+
+            # 9
+            number      = sheet.cell(row=y, column= 9).value
+
+            # 10
+            district    = sheet.cell(row=y, column= 10).value
+
+            # 11
+            city        = sheet.cell(row=y, column= 11).value
+
+            # 12
+            state       = sheet.cell(row=y, column= 12).value
+
+            # 13
             if error == 0:
-                telefone    = sheet.cell(row=y, column = 3).value
+                telefone    = sheet.cell(row=y, column = 13).value
                 if email == None:
                     msg += 'Error row {}: The cell telefone[{}] wasnt preench.\n'.format(str(y), telefone)
                     error += 1
@@ -203,21 +256,22 @@ def importClient(sheet):
                         msg += 'Error row {}: The telefone[{}] was exists in the database and cannot register.\n'.format(str(y), telefone)
                         error += 1
 
-            # 4
-            cpf         = sheet.cell(row=y, column = 4).value
-            if cpf == None:
-                msg += 'Error row {}: The cell CPF[{}] wasnt preech.\n'.format(str(y), cpf)
-                error += 1
-            else:
-                sql = "SELECT CPF FROM CLIENT WHERE CPF = '{}'".format(cpf)
-                cur.execute(sql)
-                rows = cur.fetchall()
-                if rows:
-                    msg += 'Error rpw {}: The CPF[{}] was exists in the database and cannot register.\n'.format(str(y), cpf)
+            # 14
+            if error == 0:
+                cell    = sheet.cell(row=y, column = 14).value
+                if email == None:
+                    msg += 'Error row {}: The cell cell[{}] wasnt preench.\n'.format(str(y), cell)
                     error += 1
+                else:
+                    sql = "SELECT CELL FROM CLIENT WHERE CELL = '{}'".format(cell)
+                    cur.execute(sql)
+                    rows = cur.fetchall()
+                    if rows:
+                        msg += 'Error row {}: The cell[{}] was exists in the database and cannot register.\n'.format(str(y), cell)
+                        error += 1
 
             if error == 0:
-                sql = "INSERT INTO CLIENT(NAME, EMAIL, TELEFONE, CPF) VALUES('{}', '{}', '{}', '{}')".format(name, email, telefone, cpf)
+                sql = "INSERT INTO CLIENT(NAME, CPF, RG, BIRTH, SEX, EMAIL, CEP, ADDRESS, NUMBER, DISTRICT, CITY, STATE, TELEFONE, CELL) VALUES('{}','{}','{}','{}','{}','{}','{}','{}',{},'{}','{}','{}','{}','{}');".format(name, cpf, rg, birth, sex, email, cep, address, number, district, city, state, telefone, cell)
                 #debug
                 # print(sql) 
                 try:
