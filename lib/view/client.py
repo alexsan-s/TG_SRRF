@@ -89,7 +89,6 @@ def clientNewOld(pk_client = None):
         [sg.HorizontalSeparator()],
         [sg.Button(button_text=btnInsertUpdate), sg.Exit(button_text="Cancel")],
         [sg.Image(filename='', key='image', visible=False)],
-        [sg.ProgressBar(20, orientation='h', size=(20, 20), key='progressbar', visible=False), sg.Text('Fotos capturadas: 0', key='txtCapture', size=(20,1), visible=False)], 
         [sg.Button(button_text="Capture", visible=False)],    
     
     ]
@@ -104,42 +103,21 @@ def clientNewOld(pk_client = None):
         if event == 'Register':
             if createClient(values) == 1:
                 window.close()
-                capture(2)
+                pk_client = readClientByCpf(values['ICPF'])
+                capture(pk_client[0][0], newUser=True)
             else:
                 sg.Popup('Fail in register')
         if event == 'Update':
-            updateClient(values, pk_client)
-        if created:
-            if count == 20:
-                window.close()
-                sg.Popup('Capture of face has registered successfully')
-                break
-
-            ret, image = camera.read()
-            imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            facesDetectadas = classificador.detectMultiScale(
-                imageGray, scaleFactor=1.5, minSize=(150, 150))
-            if ret:
-                for(x, y, l, a,) in facesDetectadas:
-                    cv2.rectangle(image, (x, y), (x+l, y+a), (0, 0, 255), 2)
-                    if(np.average(imageGray) > 110):
-                        imageFace = cv2.resize(imageGray[y:y + a, x:x + l], (200, 200))
-                        if event == 'Capture':
-                            count = count + 1
-                            cv2.imwrite("./assets/{}.{}.jpg".format(str(id),str(count)), imageFace)
-                            window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
-                            window.FindElement('progressbar').UpdateBar(count)            
-            window.FindElement('image').Update(data=cv2.imencode('.png', image)[1].tobytes())  
-    if(created):      
-        camera.release()
+            updateClient(values, pk_client)    
     window.close()
 
 #
 # * Screen that going to capture new images for have more people images selected
 #
 #
-def capture(selected_row):
+def capture(pk_client, newUser = False):
     pictures        = []
+    count           = 0
     camera          = cv2.VideoCapture(0)
     ways            = [os.path.join('assets', f) for f in os.listdir('assets')]
     classificador   = cv2.CascadeClassifier("haarcascade/haarcascade_frontalface_default.xml")
@@ -147,13 +125,14 @@ def capture(selected_row):
     layout = [
         [sg.Image(filename='', key='image', visible=True)],
         [sg.Button(button_text='Capture', key='btnCapture'), sg.Button(button_text='Exit', key='btnExit')],
+        [sg.ProgressBar(20, orientation='h', size=(20, 20), key='progressbar', visible=newUser), sg.Text('Fotos capturadas: 0', key='txtCapture', size=(20,1), visible=newUser)], 
     ]
     window = sg.Window('New Images', layout)
     
     # ! Take the last number the client picture
     for imageWay in ways:
         id = int(os.path.split(imageWay)[-1].split('.')[0])
-        if id == selected_row:
+        if id == pk_client:
             pictures.append(int(os.path.split(imageWay)[-1].split('.')[1]))
     pictures = sorted(pictures, key=int)
     try:
@@ -168,6 +147,12 @@ def capture(selected_row):
         if event == sg.WIN_CLOSED or event == 'btnExit':
             break
 
+        if newUser:
+            if count == 20:
+                window.close()
+                sg.Popup('Capture of face has registered successfully')
+                break
+
         ret, image = camera.read()
         imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         facesDetectadas = classificador.detectMultiScale(imageGray, scaleFactor=1.5, minSize=(150, 150))
@@ -177,10 +162,17 @@ def capture(selected_row):
                     cv2.rectangle(image, (x, y), (x+l, y+a), (0, 0, 255), 2)
                     imageFace = cv2.resize(imageGray[y:y + a, x:x + l], (200, 200))
                     if event == 'btnCapture':
-                        cv2.imwrite("./assets/{}.{}.jpg".format(str(selected_row),str(lastPicture)), imageFace)
-                        lastPicture = lastPicture + 1
-                        sg.Popup('Capture of face has registered successfully')
+                        if newUser:
+                            count = count + 1
+                            cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(count)), imageFace)
+                            window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
+                            window.FindElement('progressbar').UpdateBar(count) 
+                        else:
+                            cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(lastPicture)), imageFace)
+                            lastPicture = lastPicture + 1
+                            sg.Popup('Capture of face has registered successfully')
         window.FindElement('image').Update(data=cv2.imencode('.png', image)[1].tobytes())  
+    camera.release()
     window.close()
 
 
@@ -237,7 +229,7 @@ def screenClient():
                 data = readAllClient()
                 window.Element('tbClient').update(values=data)
         if event == 'Capture':
-            capture(selected_row)
+            capture(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
         if event == 'Search':
                 data = readClientFilter(value['cbmFilter'], value['lblInput'])
                 window.Element('tbClient').update(values=data)
