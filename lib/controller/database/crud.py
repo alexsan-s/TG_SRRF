@@ -91,6 +91,15 @@ def readClientFilter(table, filter):
     conf.close()
     return rows
 
+def readOperatorFilter(table, filter):
+    conf = configurationElephant()
+    cur = conf.cursor()
+    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR WHERE {} LIKE '%{}%';".format(table, filter)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
 def readAllClient():
     conf = configurationElephant()
     cur = conf.cursor()
