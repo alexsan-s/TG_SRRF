@@ -24,9 +24,19 @@ def writeXLSX(typeXLSX):
         fileName = '{}/ImportProduct.xlsx'.format(sourcePath)
     if typeXLSX == 'Client':
         ws['A1'] = 'NAME'
-        ws['B1'] = 'EMAIL'
-        ws['C1'] = 'TELEFONE'
-        ws['D1'] = 'CPF'
+        ws['B1'] = 'CPF'
+        ws['C1'] = 'RG'
+        ws['D1'] = 'BIRTH'
+        ws['E1'] = 'SEX'
+        ws['F1'] = 'EMAIL'
+        ws['G1'] = 'CEP'
+        ws['H1'] = 'ADDRESS'
+        ws['I1'] = 'NUMBER'
+        ws['J1'] = 'DISTRICT'
+        ws['K1'] = 'CITY'
+        ws['L1'] = 'STATE'
+        ws['M1'] = 'TELEFONE'
+        ws['N1'] = 'CELL'
         fileName = '{}/ImportClient.xlsx'.format(sourcePath)
 
     wb.save(fileName)
