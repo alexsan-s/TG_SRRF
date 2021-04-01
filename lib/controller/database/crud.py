@@ -130,3 +130,15 @@ def deleteClient(cod):
         return 1
     except:
         return 0
+
+def deleteOperator(cod):
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "DELETE FROM OPERATOR WHERE PK_OPERATOR = '{}';".format(cod)
+        cur.execute(sql)
+        conf.commit()
+        conf.close()
+        return 1
+    except:
+        return 0
