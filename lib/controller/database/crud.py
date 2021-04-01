@@ -26,7 +26,19 @@ def createClient(values):
         return 0
 
 def createOperator(values):
-    sql = 'INSERT INTO OPERATOR(NAME, TELEFONE, CPF, EMAIL, LOGIN, PASSWORD, PASS_HASH, INACTIVE) VALUES('{}', {}, {}, '{}', '{}', '{}', '{}', {})".format(name, telefone, cpf, email, login, password, pass_hash, inactive)'
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        pass_hash = hashlib.sha1(values['IPassword'].encode('utf-8')).hexdigest()
+        sql = "INSERT INTO OPERATOR(NAME, TELEFONE, CPF, EMAIL, LOGIN, PASSWORD, PASS_HASH, INACTIVE) VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', {})".format(values['IName'], values['ITelefone'], values['ICpf'], values['IEmail'], values['ILogin'], values['IPassword'], pass_hash, 0)
+        #Debug
+        # print(sql)
+        cur.execute(sql)
+        conf.commit()
+        conf.close()
+        return 1
+    except:
+        return 0
 # ! UPDATE TABLES
 
 def updateClient(values, pk_client):
