@@ -1,7 +1,7 @@
 from view import login
-# from view import client
+# from view import operator
 # from view import importData
 # * Begin of the code
 login.login()
-# client.screenClient()
+# operator.screenOperator()
 # importData.importData()
