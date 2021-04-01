@@ -139,7 +139,7 @@ def screenOperator():
         [sg.Menu(toolbar_menu)],
         [sg.Column(dataRegister)],
         [sg.Frame(title='Filter', layout=[
-            [sg.InputCombo(['Name', 'Telefone','CPF','email','login'], key='cbmFilter', default_value = 'Name'), sg.Input('', key='lblInput')],
+            [sg.InputCombo(['Name', 'Telefone','CPF','Email','Login'], key='cbmFilter', default_value = 'Name'), sg.Input('', key='lblInput')],
             [sg.Button(button_text='Search'), sg.Button(button_text='Clear')]
         ])]
     ]
