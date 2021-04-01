@@ -48,6 +48,20 @@ def updateClient(values, pk_client):
     except:
         return 0
 
+def updateOperator(values, pk_operator):
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        pass_hash = hashlib.sha1(values['IPassword'].encode('utf-8')).hexdigest()
+        sql = "UPDATE OPERATOR SET NAME = '{}', TELEFONE = '{}', CPF = '{}', EMAIL = '{}', LOGIN = '{}', PASSWORD = '{}', PASS_HASH = '{}', INACTIVE = '{}' WHERE PK_OPERATOR = {}".format(values['IName'], values['ITelefone'], values['ICpf'], values['IEmail'], values['ILogin'], values['IPassword'], pass_hash, 0, pk_operator)
+        #Debug
+        # print(sql)
+        cur.execute(sql)
+        conf.commit()
+        conf.close()
+        return 1
+    except:
+        return 0
 # ! READ TABLES
 
 def readClientByPk(pk_client):
