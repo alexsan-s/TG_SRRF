@@ -32,7 +32,7 @@ def operatorNewOld(pk_operator = None):
     layout = [
         [sg.Text("Name", size=(10,1), key='lblName'), sg.Input(name, key = 'IName')],
         [sg.Text("Telefone", size=(10,1)), sg.Input(telefone, key = 'ITelefone')], 
-        [sg.Text("CPF", size=(10,1)), sg.Input(cpf, key = 'ICPF')],
+        [sg.Text("CPF", size=(10,1)), sg.Input(cpf, key = 'ICpf')],
         [sg.Text("Email", size=(10,1), key='lblEmail'), sg.Input(email, key = 'IEmail')],
         [sg.Text("Login", size=(10,1), key='lblLogin'), sg.Input(login, key = 'ILogin')],
         [sg.Text("Password", size=(10,1), key='lblPassword'), sg.Input(password, key = 'IPassword', password_char='*')],
@@ -52,13 +52,15 @@ def operatorNewOld(pk_operator = None):
             break
         
         if event == 'Register':
-            if createClient(values) == 1:
+            if createOperator(values) == 1:
                 window.close()
-                capture(2)
             else:
                 sg.Popup('Fail in register')
         if event == 'Update':
-            updateClient(values, pk_operator)
+            if updateOperator(values, pk_operator) == 1:
+                window.close()
+            else:
+                sg.Popup('Fail in register')
     window.close()
 
 #
@@ -159,11 +161,11 @@ def screenOperator():
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
         if event == 'Delete':
-            if deleteClient(window.Element('tbOperator').Values[window.Element('tbOperator').SelectedRows[0]][0]) == 1:
+            if deleteOperator(window.Element('tbOperator').Values[window.Element('tbOperator').SelectedRows[0]][0]) == 1:
                 data = readAllOperator()
                 window.Element('tbOperator').update(values=data)
         if event == 'Search':
-                data = readClientFilter(value['cbmFilter'], value['lblInput'])
+                data = readOperatorFilter(value['cbmFilter'], value['lblInput'])
                 window.Element('tbOperator').update(values=data)
         if event == 'Clear':
             data = readAllOperator()
