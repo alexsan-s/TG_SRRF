@@ -40,6 +40,21 @@ def createOperator(values):
         return 1
     except:
         return 0
+
+def insertPicture(pk_client, picture):
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "INSERT INTO CLIENT_PICTURE(PK_CLIENT, PICTURE) VALUES({}, '{}')".format(pk_client, picture)
+        #Debug
+        print(sql)
+
+        cur.execute(sql)
+        conf.commit()
+        conf.close()
+        return 1
+    except:
+        return 0
 # ! UPDATE TABLES
 
 def updateClient(values, pk_client):
@@ -90,6 +105,17 @@ def readOperatorByPk(pk_operator):
     conf = configurationElephant()
     cur = conf.cursor()
     sql = "SELECT * FROM OPERATOR WHERE PK_OPERATOR = {};".format(pk_operator)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
+def readClientPicture(pk_client):
+    conf = configurationElephant()
+    cur = conf.cursor()
+    sql = "SELECT COUNT(PICTURE) + 1 FROM CLIENT_PICTURE WHERE pk_client = '{}';".format(pk_client)
+    #Bebug
+    # print(sql)
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()

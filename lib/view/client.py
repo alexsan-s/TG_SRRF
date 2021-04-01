@@ -130,15 +130,23 @@ def capture(pk_client, newUser = False):
     window = sg.Window('New Images', layout)
     
     # ! Take the last number the client picture
-    for imageWay in ways:
-        id = int(os.path.split(imageWay)[-1].split('.')[0])
-        if id == pk_client:
-            pictures.append(int(os.path.split(imageWay)[-1].split('.')[1]))
-    pictures = sorted(pictures, key=int)
-    try:
-        lastPicture = pictures[-1] + 1
-    except:
-        lastPicture = 1
+    if not newUser:
+        try:
+            lastPicture = readClientPicture(pk_client)[0][0]
+        except:
+            lastPicture = 1
+    #Debug
+    # print(lastPicture)
+
+    # for imageWay in ways:
+    #     id = int(os.path.split(imageWay)[-1].split('.')[0])
+    #     if id == pk_client:
+    #         pictures.append(int(os.path.split(imageWay)[-1].split('.')[1]))
+    # pictures = sorted(pictures, key=int)
+    # try:
+    #     lastPicture = pictures[-1] + 1
+    # except:
+    #     lastPicture = 1
     
     #
 
@@ -164,13 +172,19 @@ def capture(pk_client, newUser = False):
                     if event == 'btnCapture':
                         if newUser:
                             count = count + 1
-                            cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(count)), imageFace)
-                            window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
-                            window.FindElement('progressbar').UpdateBar(count) 
+                            if insertPicture(pk_client, count) == 1:
+                                cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(count)), imageFace)
+                                window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
+                                window.FindElement('progressbar').UpdateBar(count) 
+                            else:
+                                sg.Popup('Fail to regitered in the database.')
                         else:
-                            cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(lastPicture)), imageFace)
-                            lastPicture = lastPicture + 1
-                            sg.Popup('Capture of face has registered successfully')
+                            if insertPicture(pk_client, lastPicture) == 1:
+                                cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(lastPicture)), imageFace)
+                                lastPicture = lastPicture + 1
+                                sg.Popup('Capture of face has registered successfully')
+                            else:
+                                sg.Popup('Fail to regitered in the database.')
         window.FindElement('image').Update(data=cv2.imencode('.png', image)[1].tobytes())  
     camera.release()
     window.close()
