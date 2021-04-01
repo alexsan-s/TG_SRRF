@@ -2,7 +2,7 @@ from controller.database.conf import *
 import psycopg2
 import hashlib
 
-# ! CREATE TABLES
+# ! INSERT TABLES
 
 def createClient(values):
     try:
