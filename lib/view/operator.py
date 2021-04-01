@@ -123,7 +123,7 @@ def screenOperator():
         ['File', ['New', 'Edit', 'Delete', 'Exit']],
     ]
     data = readAllOperator()
-    header = ['Code','Name', 'Email']
+    header = ['Code','Name', 'Email', 'Login']
     
     # ! layout
     if not data:
