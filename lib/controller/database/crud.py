@@ -1,4 +1,5 @@
 from controller.database.conf import *
+from controller import function
 import psycopg2
 import hashlib
 
@@ -28,10 +29,50 @@ def createClient(values):
 
 def createOperator(values):
     try:
+        # 1
+        name = function.capitalizeWord(values['IName'])
+        if len(name) <= 3:
+            return -1
+        
+        #2 
+        telefone = function.validadeTelefone(values['ITelefone'])
+        if telefone:
+            telefone = values['ITelefone']
+        else:
+            return -2
+
+        #3
+        cpf = function.validadeTelefone(values['ICpf'])
+        if cpf:
+            cpf = values['ICpf']
+        else:
+            return -3
+
+        #4
+        email = function.validadeEmail(values['IEmail'])
+        if email:
+            email = function.capitalizeWord(values['IEmail'])
+        else:
+            return -4
+
+        #5
+        login = function.capitalizeWord(values['ILogin'])
+        if len(login) <= 3:
+            return -5
+        
+        #6
+        password = function.validadePassword(values['IPassword'])
+        if password:
+            password = values['IPassword']
+            pass_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        else:
+            return -6
+
+            
+
         conf = configurationElephant()
         cur = conf.cursor()
-        pass_hash = hashlib.sha1(values['IPassword'].encode('utf-8')).hexdigest()
-        sql = "INSERT INTO OPERATOR(NAME, TELEFONE, CPF, EMAIL, LOGIN, PASSWORD, PASS_HASH, INACTIVE) VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', {})".format(values['IName'], values['ITelefone'], values['ICpf'], values['IEmail'], values['ILogin'], values['IPassword'], pass_hash, 0)
+        sql = "INSERT INTO OPERATOR(NAME, TELEFONE, CPF, EMAIL, LOGIN, PASSWORD, PASS_HASH, INACTIVE) VALUES('{}', '{}', '{}', '{}', '{}', '{}', '{}', {})".format(name, telefone, cpf, email, login, password, pass_hash, 0)
         #Debug
         # print(sql)
         cur.execute(sql)
@@ -78,10 +119,56 @@ def updateClient(values, pk_client):
 
 def updateOperator(values, pk_operator):
     try:
+        # 1
+        name = function.capitalizeWord(values['IName'])
+        if len(name) <= 3:
+            return -1
+        
+        #2 
+        telefone = function.validadeTelefone(values['ITelefone'])
+        if telefone:
+            telefone = values['ITelefone']
+        else:
+            return -2
+
+        #3
+        cpf = function.validadeTelefone(values['ICpf'])
+        if cpf:
+            cpf = values['ICpf']
+        else:
+            return -3
+
+        #4
+        email = function.validadeEmail(values['IEmail'])
+        if email:
+            email = function.capitalizeWord(values['IEmail'])
+        else:
+            return -4
+
+        #5
+        login = function.capitalizeWord(values['ILogin'])
+        if len(login) <= 3:
+            return -5
+        
+        #6
+        password = function.validadePassword(values['IPassword'])
+        if password:
+            password = values['IPassword']
+            pass_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+        else:
+            return -6
+
+        #7
+        inactive = values['IInactive']
+        if inactive:
+            inactive = 1
+        else:
+            inactive = 0
+
         conf = configurationElephant()
         cur = conf.cursor()
         pass_hash = hashlib.sha1(values['IPassword'].encode('utf-8')).hexdigest()
-        sql = "UPDATE OPERATOR SET NAME = '{}', TELEFONE = '{}', CPF = '{}', EMAIL = '{}', LOGIN = '{}', PASSWORD = '{}', PASS_HASH = '{}', INACTIVE = '{}' WHERE PK_OPERATOR = {}".format(values['IName'], values['ITelefone'], values['ICpf'], values['IEmail'], values['ILogin'], values['IPassword'], pass_hash, 0, pk_operator)
+        sql = "UPDATE OPERATOR SET NAME = '{}', TELEFONE = '{}', CPF = '{}', EMAIL = '{}', LOGIN = '{}', PASSWORD = '{}', PASS_HASH = '{}', INACTIVE = '{}' WHERE PK_OPERATOR = {}".format(name, telefone, cpf, email, login, password, pass_hash, inactive, pk_operator)
         #Debug
         # print(sql)
         cur.execute(sql)

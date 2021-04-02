@@ -9,24 +9,31 @@ import os
 #
 def operatorNewOld(pk_operator = None):
     if pk_operator != None:
-        data = readOperatorByPk(pk_operator)
-        name = data[0][1]
-        telefone = data[0][2]
-        cpf = data[0][3]
-        email = data[0][4]
-        login = data[0][5]
-        password = data[0][6]
+        data            = readOperatorByPk(pk_operator)
+        name            = data[0][1]
+        telefone        = data[0][2]
+        cpf             = data[0][3]
+        email           = data[0][4]
+        login           = data[0][5]
+        password        = data[0][6]
+        invalid         = data[0][8]
+        if invalid == 1:
+            invalid     = True
+        else:
+            invalid     = False
+        rdInactive      = [sg.Checkbox('Inactive', default=invalid, key='IInactive')]
         btnInsertUpdate = 'Update'
-        title = 'Edit Operator {}'.format(name)
+        title           = 'Edit Operator {}'.format(name)
     else:
-        name = ''
-        telefone = ''
-        cpf = ''
-        email = ''
-        login = ''
-        password = ''
+        name            = ''
+        telefone        = ''
+        cpf             = ''
+        email           = ''
+        login           = ''
+        password        = ''
+        rdInactive      = []
         btnInsertUpdate = 'Register'
-        title = 'New Operator'
+        title           = 'New Operator'
 
     # ! LAYOUT
     layout = [
@@ -36,6 +43,7 @@ def operatorNewOld(pk_operator = None):
         [sg.Text("Email", size=(10,1), key='lblEmail'), sg.Input(email, key = 'IEmail')],
         [sg.Text("Login", size=(10,1), key='lblLogin'), sg.Input(login, key = 'ILogin')],
         [sg.Text("Password", size=(10,1), key='lblPassword'), sg.Input(password, key = 'IPassword', password_char='*')],
+        rdInactive,
         [sg.HorizontalSeparator()],
         [sg.Button(button_text=btnInsertUpdate), sg.Exit(button_text="Cancel")],
         [sg.Image(filename='', key='image', visible=False)],
@@ -52,13 +60,41 @@ def operatorNewOld(pk_operator = None):
             break
         
         if event == 'Register':
-            if createOperator(values) == 1:
+            created = createOperator(values)
+            if created == 1:
                 window.close()
-            else:
+            elif created == 0:
                 sg.Popup('Fail in register')
+            elif created == -1:
+                sg.Popup('Name invalid')
+            elif created == -2:
+                sg.Popup('Telefone invalid')
+            elif created == -3:
+                sg.Popup('CPF invalid')
+            elif created == -4:
+                sg.Popup('Email invalid')
+            elif created == -5:
+                sg.Popup('Login invalid')
+            elif created == -6:
+                sg.Popup('Password invalid')
         if event == 'Update':
-            if updateOperator(values, pk_operator) == 1:
+            updated = updateOperator(values, pk_operator)
+            if updated == 1:
                 window.close()
+            elif updated == 0:
+                sg.Popup('Fail in register')
+            elif updated == -1:
+                sg.Popup('Name invalid')
+            elif updated == -2:
+                sg.Popup('Telefone invalid')
+            elif updated == -3:
+                sg.Popup('CPF invalid')
+            elif updated == -4:
+                sg.Popup('Email invalid')
+            elif updated == -5:
+                sg.Popup('Login invalid')
+            elif updated == -6:
+                sg.Popup('Password invalid')
             else:
                 sg.Popup('Fail in register')
     window.close()
