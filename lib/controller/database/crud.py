@@ -439,11 +439,11 @@ def readClientFilter(table, filter):
     conf = configurationElephant()
     cur = conf.cursor()
     if table == 'Birth':
-        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = '{}';".format(table, filter)
+        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = '{}' ORDER BY NAME;".format(table, filter)
     elif table == 'Number':
-        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = {};".format(table, filter)
+        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = {} ORDER BY NAME;".format(table, filter)
     else:
-        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} LIKE '%{}%';".format(table, filter)
+        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} LIKE '%{}%' ORDER BY NAME;".format(table, filter)
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
@@ -454,7 +454,7 @@ def readOperatorFilter(table, filter):
     filter = function.capitalizeWord(filter)
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR WHERE {} LIKE '%{}%';".format(table, filter)
+    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR WHERE {} LIKE '%{}%' ORDER BY NAME;".format(table, filter)
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
@@ -463,7 +463,7 @@ def readOperatorFilter(table, filter):
 def readAllClient():
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY PK_CLIENT;"
+    sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY PK_CLIENT ORDER BY NAME;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
@@ -472,7 +472,7 @@ def readAllClient():
 def readAllOperator():
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR ORDER BY PK_OPERATOR;"
+    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR ORDER BY PK_OPERATOR ORDER BY NAME;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
