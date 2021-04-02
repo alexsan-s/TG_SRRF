@@ -463,7 +463,7 @@ def readOperatorFilter(table, filter):
 def readAllClient():
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY PK_CLIENT ORDER BY NAME;"
+    sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY NAME;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
@@ -472,7 +472,7 @@ def readAllClient():
 def readAllOperator():
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR ORDER BY PK_OPERATOR ORDER BY NAME;"
+    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR ORDER BY NAME;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
