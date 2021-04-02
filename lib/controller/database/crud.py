@@ -434,6 +434,8 @@ def readClientByRg(rg):
     return rows
 
 def readClientFilter(table, filter):
+    table = function.capitalizeWord(table)
+    filter = function.capitalizeWord(filter)
     conf = configurationElephant()
     cur = conf.cursor()
     if table == 'Birth':
@@ -448,6 +450,8 @@ def readClientFilter(table, filter):
     return rows
 
 def readOperatorFilter(table, filter):
+    table = function.capitalizeWord(table)
+    filter = function.capitalizeWord(filter)
     conf = configurationElephant()
     cur = conf.cursor()
     sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR WHERE {} LIKE '%{}%';".format(table, filter)
