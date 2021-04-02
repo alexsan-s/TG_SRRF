@@ -7,18 +7,119 @@ import hashlib
 
 def createClient(values):
     try:
+        name        = 'null'
+        cpf         = 'null'
+        rg          = 'null'
+        birth       = 'null'
+        sex         = 'null'
+        email       = 'null'
+        cep         = 'null'
+        address     = 'null'
+        number      = 'null'
+        district    = 'null'
+        city        = 'null'
+        state       = 'null'
+        telefone    = 'null'
+        cell        = 'null'
+        # 1
+        name = function.capitalizeWord(values['IName'])
+        if len(name) <= 3:
+            return -1
+
+        #2
+        cpf = function.validadeCPF(values['ICpf'])
+        if cpf:
+            cpf = values['ICpf']
+            if readClientByCpf(cpf):
+                return -2
+        else:
+            return -2
+
+        #3
+        if len(values['IRg']) >= 1:
+            rg = function.validadeRg(values['IRg'])
+            if rg:
+                rg = values['IRg']
+                if readClientByRg(cpf):
+                    return -2
+            else:
+                return -3
+
+        #4
+        birth = function.validadeDate(values['IBirth'])
+        if birth:
+            birth = values['IBirth']
+        else:
+            return -4
+        
+        #5
+        if values['R1'] == True:
+            sex = "M"
+        elif values['R2'] == True:
+            sex = "F" 
+        else: 
+            sex = "I"
+
+        #6
+        email = function.validadeEmail(values['IEmail'])
+        if email:
+            email = function.capitalizeWord(values['IEmail'])
+        else:
+            return -6
+
+        #7
+        if len(values['ICep']) >= 1:
+            cep = function.validadeCep(values['ICep'])
+            if cep:
+                cep = function.capitalizeWord(values['ICep'])
+            else:
+                return -7
+        
+        #8
+        if len(values['IAddress']) >= 1:
+            address = function.capitalizeWord(values['IAddress'])
+
+        #9
+        if len(values['INumber']) >= 1:
+            number = function.validadeNumber(values['INumber'])
+            if number:
+                number = values['INumber']
+            else:
+                return -9
+
+        #10
+        if len(values['IDistrict']) >= 1:
+            district = function.capitalizeWord(values['IDistrict'])
+
+        #11
+        if len(values['ICity']) >= 1:
+            city = function.capitalizeWord(values['ICity'])
+
+        #12
+        if len(values['IState']) >= 1:
+            if len(values['IState']) == 2:
+                state = function.capitalizeWord(values['IState'])
+            else:
+                return -12
+
+        #13
+        if len(values['ITelefone']) >= 1:
+            telefone = function.validadeTelefone(values['ITelefone'])
+            if telefone:
+                telefone = values['ITelefone']
+            else:
+                return -13
+
+        #14
+        cell = function.validadeTelefone(values['ICell'])
+        if cell:
+            cell = values['ICell']
+        else:
+            return -14
+        
         conf = configurationElephant()
         cur = conf.cursor()
-        if values['R1'] == True:
-            IRadio = "M"
-        elif values['R2'] == True:
-            IRadio = "F" 
-        else: 
-            IRadio = "I"
-        hasCpf = readClientByCpf(values["ICPF"])
-        if hasCpf:
-            return 0
-        sql = """INSERT INTO CLIENT(NAME, CPF, RG, BIRTH, SEX, EMAIL, CEP, ADDRESS, NUMBER, DISTRICT, CITY, STATE, TELEFONE, CELL) VALUES('{}','{}','{}','{}','{}','{}','{}','{}',{},'{}','{}','{}','{}','{}');""".format(values['IName'],values['ICPF'],values['IRG'],values['IDate'],IRadio,values['IEmail'], values['ICep'],values['IAdrress'],values['INumber'],values['IDistrict'],values['ICity'],values['IState'],values['ITelefone'],values['ICell'])
+        sql = "INSERT INTO CLIENT(NAME, CPF, RG, BIRTH, SEX, EMAIL, CEP, ADDRESS, NUMBER, DISTRICT, CITY, STATE, TELEFONE, CELL) VALUES('{}','{}','{}','{}','{}','{}','{}','{}',{},'{}','{}','{}','{}','{}');".format(name, cpf, rg, birth, sex, email, cep, address, number, district, city, state, telefone, cell)
         cur.execute(sql)
         conf.commit()
         conf.close()
@@ -100,15 +201,119 @@ def insertPicture(pk_client, picture):
 
 def updateClient(values, pk_client):
     try:
+        name        = 'null'
+        cpf         = 'null'
+        rg          = 'null'
+        birth       = 'null'
+        sex         = 'null'
+        email       = 'null'
+        cep         = 'null'
+        address     = 'null'
+        number      = 'null'
+        district    = 'null'
+        city        = 'null'
+        state       = 'null'
+        telefone    = 'null'
+        cell        = 'null'
+        # 1
+        name = function.capitalizeWord(values['IName'])
+        if len(name) <= 3:
+            return -1
+
+        #2
+        cpf = function.validadeCPF(values['ICpf'])
+        if cpf:
+            cpf = values['ICpf']
+            if readClientByCpf(cpf, pk_client = pk_client):
+                return -2
+        else:
+            return -2
+
+        #3
+        if len(values['IRg']) >= 1:
+            rg = function.validadeRg(values['IRg'])
+            if rg:
+                rg = values['IRg']
+                if readClientByRg(cpf):
+                    return -2
+            else:
+                return -3
+
+        #4
+        birth = function.validadeDate(values['IBirth'])
+        if birth:
+            birth = values['IBirth']
+        else:
+            return -4
+        
+        #5
+        if values['R1'] == True:
+            sex = "M"
+        elif values['R2'] == True:
+            sex = "F" 
+        else: 
+            sex = "I"
+
+        #6
+        email = function.validadeEmail(values['IEmail'])
+        if email:
+            email = function.capitalizeWord(values['IEmail'])
+        else:
+            return -6
+
+        #7
+        if len(values['ICep']) >= 1:
+            cep = function.validadeCep(values['ICep'])
+            if cep:
+                cep = function.capitalizeWord(values['ICep'])
+            else:
+                return -7
+        
+        #8
+        if len(values['IAddress']) >= 1:
+            address = function.capitalizeWord(values['IAddress'])
+
+        #9
+        if len(values['INumber']) >= 1:
+            number = function.validadeNumber(values['INumber'])
+            if number:
+                number = values['INumber']
+            else:
+                return -9
+
+        #10
+        if len(values['IDistrict']) >= 1:
+            district = function.capitalizeWord(values['IDistrict'])
+
+        #11
+        if len(values['ICity']) >= 1:
+            city = function.capitalizeWord(values['ICity'])
+
+        #12
+        if len(values['IState']) >= 1:
+            if len(values['IState']) == 2:
+                state = function.capitalizeWord(values['IState'])
+            else:
+                return -12
+
+        #13
+        if len(values['ITelefone']) >= 1:
+            telefone = function.validadeTelefone(values['ITelefone'])
+            if telefone:
+                telefone = values['ITelefone']
+            else:
+                return -13
+
+        #14
+        cell = function.validadeTelefone(values['ICell'])
+        if cell:
+            cell = values['ICell']
+        else:
+            return -14
+
         conf = configurationElephant()
         cur = conf.cursor()
-        if values['R1'] == True:
-            IRadio = "M"
-        elif values['R2'] == True:
-            IRadio = "F" 
-        else: 
-            IRadio = "I"
-        sql = "UPDATE CLIENT SET NAME = '{}', CPF = '{}', RG = '{}', BIRTH = '{}', SEX = '{}', EMAIL = '{}', CEP = '{}', ADDRESS = '{}', NUMBER = '{}', DISTRICT = '{}', CITY = '{}', STATE = '{}', TELEFONE = '{}', CELL = '{}' WHERE PK_CLIENT = {}".format(values['IName'],values['ICPF'],values['IRG'],values['IDate'],IRadio,values['IEmail'], values['ICep'],values['IAdrress'],values['INumber'],values['IDistrict'],values['ICity'],values['IState'],values['ITelefone'],values['ICell'], pk_client)
+        sql = "UPDATE CLIENT SET NAME = '{}', CPF = '{}', RG = '{}', BIRTH = '{}', SEX = '{}', EMAIL = '{}', CEP = '{}', ADDRESS = '{}', NUMBER = '{}', DISTRICT = '{}', CITY = '{}', STATE = '{}', TELEFONE = '{}', CELL = '{}' WHERE PK_CLIENT = {}".format(name, cpf, rg, birth, sex, email, cep, address, number, district, city, state, telefone, cell, pk_client)
         cur.execute(sql)
         conf.commit()
         conf.close()
@@ -208,10 +413,21 @@ def readClientPicture(pk_client):
     conf.close()
     return rows
 
-def readClientByCpf(cpf):
+def readClientByCpf(cpf, pk_client = None):
     conf = configurationElephant()
     cur = conf.cursor()
-    sql = "SELECT PK_CLIENT FROM CLIENT WHERE CPF = '" + cpf + "';"
+    sql = "SELECT PK_CLIENT FROM CLIENT WHERE CPF = '{}'".format(cpf)
+    if pk_client:
+        sql += 'AND PK_CLIENT <> {}'.format(pk_client)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
+def readClientByRg(rg):
+    conf = configurationElephant()
+    cur = conf.cursor()
+    sql = "SELECT PK_CLIENT FROM CLIENT WHERE RG = '" + rg + "';"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()

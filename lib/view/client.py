@@ -16,67 +16,91 @@ def clientNewOld(pk_client = None):
     classificador = cv2.CascadeClassifier("haarcascade/haarcascade_frontalface_default.xml")
 
     if pk_client != None:
-        data = readClientByPk(pk_client)
-        name = data[0][1]
-        cpf = data[0][2]
-        rg = data[0][3]
-        birth = data[0][4]
-        sex = data[0][5]
+        data        = readClientByPk(pk_client)
+        name        = data[0][1]
+        cpf         = data[0][2]
+        if data[0][3] == 'null': 
+            rg      = ''    
+        else: 
+            rg      = data[0][3]
+        birth       = data[0][4]
+        sex         = data[0][5]
         if sex == 'M':
-            sexM = True
-            sexF = False
-            sexI = False
+            sexM    = True
+            sexF    = False
+            sexI    = False
         elif sex == 'F':
-            sexM = False
-            sexF = True
-            sexI = False
+            sexM    = False
+            sexF    = True
+            sexI    = False
         else:
-            sexM = False
-            sexF = False
-            sexI = True
-        email = data[0][6]
-        cep = data[0][7]
-        address = data[0][8]
-        number = data[0][9]
-        district = data[0][10]
-        city = data[0][11]
-        state = data[0][12]
-        telefone = data[0][13]
-        cell = data[0][14]
+            sexM    = False
+            sexF    = False
+            sexI    = True
+        email       = data[0][6]
+        if data[0][7]   == 'null': 
+            cep     = '' 
+        else:
+            cep     = data[0][7]     
+        if data[0][8]   == 'null': 
+            address = '' 
+        else:
+            address = data[0][8]     
+        if data[0][9]   == 'null': 
+            number  = '' 
+        else:
+            number  = data[0][9]     
+        if data[0][10]  == 'null': 
+            district= '' 
+        else:
+            district= data[0][10]    
+        if data[0][11]  == 'null': 
+            city    = '' 
+        else:
+            city    = data[0][11]    
+        if data[0][12]  == 'null': 
+            state   = '' 
+        else:
+            state   = data[0][12]    
+        if data[0][13]  == 'null': 
+            telefone= '' 
+        else:
+            telefone= data[0][13]    
+        cell        = data[0][14]
         btnInsertUpdate = 'Update'
-        title = 'Edit client {}'.format(name)
+        title       = 'Edit client {}'.format(name)
     else:
-        name = ''
-        cpf = ''
-        rg = ''
-        birth = ''
-        sexM = False
-        sexF = False
-        sexI = True
-        email = ''
-        cep = ''
-        address = ''
-        number = ''
-        district = ''
-        city = ''
-        state = ''
-        telefone = ''
-        cell = ''
+        name        = ''
+        cpf         = ''
+        rg          = ''
+        birth       = ''
+        sexM        = False
+        sexF        = False
+        sexI        = True
+        email       = ''
+        cep         = ''
+        address     = ''
+        number      = ''
+        district    = ''
+        city        = ''
+        state       = ''
+        telefone    = ''
+        cell        = ''
         btnInsertUpdate = 'Register'
-        title = 'New client'
+        title       = 'New client'
 
     # ! LAYOUT
     layout = [
         [sg.Text("Name", size=(10,1), key='lblName'), sg.Input(name, key = 'IName')],
         [sg.Text('',size=(20,1), key='lblErrorName', visible=False)],
-        [sg.Text("CPF", size=(10,1)), sg.Input(cpf, key = 'ICPF')],
-        [sg.Text("RG", size=(10,1)), sg.Input(rg, key = 'IRG')],
-        [sg.Text("Birth", size=(10,1)), sg.Input(birth, key= 'IDate'),sg.CalendarButton("Pick date", format='%Y-%m-%d')],
+        [sg.Text("CPF", size=(10,1)), sg.Input(cpf, key = 'ICpf')],
+        [sg.Text("RG", size=(10,1)), sg.Input(rg, key = 'IRg')],
+        [sg.Text("Birth", size=(10,1)), sg.Input(birth, key= 'IBirth'),sg.CalendarButton("Pick date", format='%Y-%m-%d')],
         [sg.Text("Sex", size=(10,1)), sg.Radio("Masc", "RADIO1", key='R1', default=sexM), sg.Radio("Fem", "RADIO1", key='R2', default=sexF), sg.Radio("Undefined", "RADIO1", key='R3', default=sexI)],
         [sg.Text("Email", size=(10,1), key='lblEmail'), sg.Input(email, key = 'IEmail')],
         [sg.Frame(layout=[
             [sg.Text("Cep", size=(10,1)), sg.Input(cep, key = 'ICep')],
-            [sg.Text("Adrress", size=(10,1)), sg.Input(address, key = 'IAdrress')],
+            [sg.Text("Address", size=(10,1)), sg.Input(address, key = 'IAddress')],
             [sg.Text("Number", size=(10,1)), sg.Input(number, key = 'INumber')],
             [sg.Text("District", size=(10,1)), sg.Input(district, key = 'IDistrict')],
             [sg.Text("City", size=(10,1)), sg.Input(city, key = 'ICity')],
@@ -101,14 +125,76 @@ def clientNewOld(pk_client = None):
             break
         
         if event == 'Register':
-            if createClient(values) == 1:
+            register = createClient(values)
+            if register == 1:
                 window.close()
-                pk_client = readClientByCpf(values['ICPF'])
+                pk_client = readClientByCpf(values['ICpf'])
                 capture(pk_client[0][0], newUser=True)
-            else:
+            elif register == 0:
                 sg.Popup('Fail in register')
+            elif register == -1:
+                sg.Popup('Invalid name')
+            elif register == -2:
+                sg.Popup('Invalid cpf')
+            elif register == -3:
+                sg.Popup('Invalid rg')
+            elif register == -4:
+                sg.Popup('Invalid birth')
+            elif register == -5:
+                sg.Popup('Invalid sex')
+            elif register == -6:
+                sg.Popup('Invalid email')
+            elif register == -7:
+                sg.Popup('Invalid cep')
+            elif register == -8:
+                sg.Popup('Invalid address')
+            elif register == -9:
+                sg.Popup('Invalid number')
+            elif register == -10:
+                sg.Popup('Invalid district')
+            elif register == -11:
+                sg.Popup('Invalid city')
+            elif register == -12:
+                sg.Popup('Invalid state')
+            elif register == -13:
+                sg.Popup('Invalid telefone')
+            elif register == -14:
+                sg.Popup('Invalid cell')
         if event == 'Update':
-            updateClient(values, pk_client)    
+            updated = updateClient(values, pk_client)   
+            if updated == 1:
+                sg.Popup('Updated successfully')
+            elif updated == 0:
+                sg.Popup('Fail in updated')
+            elif updated == -1:
+                sg.Popup('Invalid name')
+            elif updated == -2:
+                sg.Popup('Invalid cpf')
+            elif updated == -3:
+                sg.Popup('Invalid rg')
+            elif updated == -4:
+                sg.Popup('Invalid birth')
+            elif updated == -5:
+                sg.Popup('Invalid sex')
+            elif updated == -6:
+                sg.Popup('Invalid email')
+            elif updated == -7:
+                sg.Popup('Invalid cep')
+            elif updated == -8:
+                sg.Popup('Invalid address')
+            elif updated == -9:
+                sg.Popup('Invalid number')
+            elif updated == -10:
+                sg.Popup('Invalid district')
+            elif updated == -11:
+                sg.Popup('Invalid city')
+            elif updated == -12:
+                sg.Popup('Invalid state')
+            elif updated == -13:
+                sg.Popup('Invalid telefone')
+            elif updated == -14:
+                sg.Popup('Invalid cell') 
+
     window.close()
 
 #
@@ -177,14 +263,14 @@ def capture(pk_client, newUser = False):
                                 window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
                                 window.FindElement('progressbar').UpdateBar(count) 
                             else:
-                                sg.Popup('Fail to regitered in the database.')
+                                sg.Popup('Fail to registerred in the database.')
                         else:
                             if insertPicture(pk_client, lastPicture) == 1:
                                 cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(lastPicture)), imageFace)
                                 lastPicture = lastPicture + 1
                                 sg.Popup('Capture of face has registered successfully')
                             else:
-                                sg.Popup('Fail to regitered in the database.')
+                                sg.Popup('Fail to registerred in the database.')
         window.FindElement('image').Update(data=cv2.imencode('.png', image)[1].tobytes())  
     camera.release()
     window.close()
