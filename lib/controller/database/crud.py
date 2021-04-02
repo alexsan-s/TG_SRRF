@@ -180,6 +180,14 @@ def readLogin(login, password):
     conf.close()
     return rows
 
+def readPicture():
+    conf = configurationElephant()
+    cur = conf.cursor()
+    sql = "SELECT CONCAT(PK_CLIENT,'.',PICTURE,'.jpg') FROM CLIENT_PICTURE ORDER BY PK_CLIENT_PICTURE"
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
 # ! DROP TABLE
 def deleteClient(cod):
     try:
