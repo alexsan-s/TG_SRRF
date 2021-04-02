@@ -2,7 +2,7 @@ def toolbarMenu(toolbar):
     # ! TOOLBAR MENU
     if toolbar == 'home':
         toolbar_menu = [
-            ['File', ['Client', 'Operator', 'Product', 'Images', 'Training','Import Data', 'Logout', 'Exit',]],
-            ['Recognition', ['Eigenfaces', 'Fisherface', 'LBPH']]
+            ['File', ['Training','Import Data', 'Logout', 'Exit',]],
+            ['View', ['Client', 'Operator', 'Product', 'Images', 'Recognition', ['Eigenfaces', 'Fisherface', 'LBPH']]]
         ]
     return toolbar_menu
