@@ -182,6 +182,33 @@ def createOperator(values):
         return 1
     except:
         return 0
+    
+def createProduct(values):
+    try:
+        # 1
+        product = function.capitalizeWord(values['IProduct'])
+        if len(product) <= 3:
+            return -1
+        
+        #2 
+        if len(values['IDescription']) >= 3:
+            description = function.capitalizeWord(values['IDescription'])
+            if description:
+                description = values['IDescription']
+            else:
+                return -2            
+
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "INSERT INTO PRODUCT(PRODUCT, DESCRIPTION, INACTIVE) VALUES('{}', '{}', {})".format(product, description, 0)
+        #Debug
+        # print(sql)
+        cur.execute(sql)
+        conf.commit()
+        conf.close()
+        return 1
+    except:
+        return 0
 
 def insertPicture(pk_client, picture):
     try:
@@ -382,6 +409,40 @@ def updateOperator(values, pk_operator):
         return 1
     except:
         return 0
+
+def updateProduct(values, pk_product):
+    try:
+        # 1
+        product = function.capitalizeWord(values['IProduct'])
+        if len(product) <= 3:
+            return -1
+
+        #2 
+        if len(values['IDescription']) >= 3:
+            description = function.capitalizeWord(values['IDescription'])
+            if description:
+                description = values['IDescription']
+            else:
+                return -2  
+
+        #3
+        inactive = values['IInactive']
+        if inactive:
+            inactive = 1
+        else:
+            inactive = 0
+
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "UPDATE PRODUCT SET PRODUCT = '{}', DESCRIPTION = '{}', INACTIVE = '{}' WHERE PK_PRODUCT = {}".format(product, description, inactive, pk_product)
+        #Debug
+        # print(sql)
+        cur.execute(sql)
+        conf.commit()
+        conf.close()
+        return 1
+    except:
+        return 0
 # ! READ TABLES
 
 def readClientByPk(pk_client):
@@ -397,6 +458,15 @@ def readOperatorByPk(pk_operator):
     conf = configurationElephant()
     cur = conf.cursor()
     sql = "SELECT * FROM OPERATOR WHERE PK_OPERATOR = {};".format(pk_operator)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
+def readProductByPk(pk_product):
+    conf = configurationElephant()
+    cur = conf.cursor()
+    sql = "SELECT * FROM PRODUCT WHERE PK_PRODUCT = {};".format(pk_product)
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()
@@ -460,10 +530,33 @@ def readOperatorFilter(table, filter):
     conf.close()
     return rows
 
+def readProductFilter(table, filter):
+    table = function.capitalizeWord(table)
+    filter = function.capitalizeWord(filter)
+    conf = configurationElephant()
+    cur = conf.cursor()
+    if table == 'CODE':
+        sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE PK_PRODUCT = {} ORDER BY PRODUCT;".format(filter)
+    else:
+        sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE {} LIKE '%{}%' ORDER BY PRODUCT;".format(table, filter)
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
 def readAllClient():
     conf = configurationElephant()
     cur = conf.cursor()
     sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY NAME;"
+    cur.execute(sql)
+    rows = cur.fetchall()
+    conf.close()
+    return rows
+
+def readAllProduct():
+    conf = configurationElephant()
+    cur = conf.cursor()
+    sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT ORDER BY PRODUCT;"
     cur.execute(sql)
     rows = cur.fetchall()
     conf.close()

@@ -22,6 +22,9 @@ def screenHome():
         if event == 'Operator':
             from view import operator
             operator.screenOperator()
+        if event == 'Product':
+            from view import product
+            product.screen()
         if event == 'Images':
             from view import images
             images.screen()
