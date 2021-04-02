@@ -298,7 +298,7 @@ def screenClient():
         ]
     else:
         dataRegister = [
-            [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=100, justification='left', key='tbClient', enable_events=True)]
+            [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=40, justification='left', key='tbClient', enable_events=True)]
         ]
 
     layout = [
