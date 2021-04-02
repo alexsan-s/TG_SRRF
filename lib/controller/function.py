@@ -1,4 +1,5 @@
 import re
+import datetime
 
 # Validade CPF
 def validadeCPF(value):
@@ -26,6 +27,13 @@ def validadeCep(value):
 def validadePassword(value):
     return re.search('(?=^.{6,}$)((?=.*\w)(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[|!"$%&\/\(\)\?\^\'\\\+\-\*]))^.*', value)
 
+def validadeDate(value):
+    format = '%Y-%m-%d'
+    try:
+        datetime.datetime.strptime(value, format)
+        return True
+    except ValueError:
+        return False
 #Debug
 # x = validadeCep('12092390')
 # print(x)
