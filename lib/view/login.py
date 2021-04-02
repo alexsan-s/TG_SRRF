@@ -33,8 +33,13 @@ def login():
 #
 def searchLogin(value):
     try:
+        if len(value['ILogin']) < 1:
+            return -1
+        from controller import function
+        login = function.capitalizeWord(value['ILogin'])
         pass_hash = hashlib.sha1(value['IPassword'].encode('utf-8')).hexdigest()
-        row = readLogin(value['ILogin'], pass_hash)
+
+        row = readLogin(login, pass_hash)
         if not row:
             return 0
         else:
