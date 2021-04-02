@@ -34,8 +34,11 @@ def validadeDate(value):
         return True
     except ValueError:
         return False
+    
+def validadeNumber(value):
+    return re.search('^[0-9]+$', value)
 #Debug
-# x = validadeCep('12092390')
+# x = validadeDate('2021-04-02')
 # print(x)
 # if x:
 #     print('ihul')
