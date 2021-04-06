@@ -44,7 +44,7 @@ def screen():
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
         if event == 'Delete':
-            if deleteOperator(window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]][0]) == 1:
+            if deleteProduct(window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]][0]) == 1:
                 data = readAllProduct()
                 window.Element('tbProduct').update(values=data)
         if event == 'Search':
