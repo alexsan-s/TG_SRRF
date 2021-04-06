@@ -161,12 +161,17 @@ def importProduct(sheet):
             error = 0
 
             # 1
-            product = sheet.cell(row=y, column= 1).value
-            if product == None:
+            tempProduct = sheet.cell(row=y, column= 1).value
+            if tempProduct == None:
                 break
+            product = function.capitalizeWord(tempProduct)
             
             # 2
-            description    = sheet.cell(row=y, column = 2).value
+            tempDescription    = sheet.cell(row=y, column = 2).value
+            if tempDescription == None:
+                description = ''
+            else:
+                description = tempDescription
 
             
 
