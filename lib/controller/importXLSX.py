@@ -2,6 +2,7 @@ import openpyxl
 import hashlib
 from datetime import datetime
 from controller.database.conf import *
+from controller import function
 
 def importXLSX(table, file_path):
     try:
@@ -32,64 +33,100 @@ def importOperator(sheet):
             error = 0
 
             # 1
-            name = sheet.cell(row=y, column= 1).value
-            if name == None:
+            temp = sheet.cell(row=y, column= 1).value
+            if temp == None:
                 break
+            name = function.capitalizeWord(temp)
             
             # 2
-            telefone    = sheet.cell(row=y, column = 2).value
+            temp    = sheet.cell(row=y, column = 2).value
+            if temp == None:
+                if temp:
+                    telefone = temp
+            else:
+                temp = function.validadeTelefone(str(temp))
+                if temp:
+                    telefone = sheet.cell(row=y, column = 2).value
+                else:
+                    msg += 'Erro row {}: The phone[{}] field was not filled in correctly.\n'.format(str(y), temp)
+                    error += 1
 
             # 3
-            cpf         = sheet.cell(row=y, column = 3).value
-            if cpf == None:
-                msg += 'Erro linha {}: O campo CPF[{}] não está preenchido.\n'.format(str(y), cpf)
+            temp         = sheet.cell(row=y, column = 3).value
+            if temp == None:
+                msg += 'Error row {}: The CPF[{}] field was not filled in correctly.\n'.format(str(y), temp)
                 error += 1
             else:
-                sql = "SELECT CPF FROM OPERATOR WHERE CPF = '{}'".format(cpf)
-                cur.execute(sql)
-                rows = cur.fetchall()
-                if rows:
-                    msg += 'Erro linha {}: O CPF[{}] já existe no banco de dados e não pode ser inserido.\n'.format(str(y), cpf)
-                    error += 1
-            # 4
-            if error == 0:
-                email       = sheet.cell(row=y, column = 4).value
-                if email == None:
-                    msg += 'Erro linha {}: O campo email[{}] não está preenchido.\n'.format(str(y), email)
-                    error += 1
-                else:
-                    sql = "SELECT EMAIL FROM OPERATOR WHERE EMAIL = '{}'".format(email)
+                cpf     = function.validadeCPF(str(temp))
+                if cpf:
+                    cpf = temp
+                    sql = "SELECT CPF FROM OPERATOR WHERE CPF = '{}'".format(cpf)
                     cur.execute(sql)
                     rows = cur.fetchall()
                     if rows:
-                        msg += 'Erro linha {}: O EMAIL[{}] já existe no banco de dados e não pode ser inserido.\n'.format(str(y), email)
+                        msg += 'Erro linha {}: O CPF[{}] already exists in the database and cannot be inserted.\n'.format(str(y), cpf)
                         error += 1
-            # 5
+                else:
+                    msg += 'Erro row {}: The cpf[{}] field was not filled in correctly.\n'.format(str(y), cpf)
+                    error += 1
+
+            # 4
             if error == 0:
-                login       = sheet.cell(row=y, column = 5).value
-                if login == None:
-                    msg += 'Erro linha {}: O campo login[{}] não está preenchido.\n'.format(str(y), login)
+                temp       = sheet.cell(row=y, column = 4).value
+                if temp == None:
+                    msg += 'Erro linha {}: O campo email[{}] não está preenchido.\n'.format(str(y), temp)
                     error += 1
                 else:
+                    if function.validadeEmail(str(temp)):
+                        email = function.capitalizeWord(temp)
+                        sql = "SELECT EMAIL FROM OPERATOR WHERE EMAIL = '{}'".format(email)
+                        cur.execute(sql)
+                        rows = cur.fetchall()
+                        if rows:
+                            msg += 'Erro linha {}: O EMAIL[{}] already exists in the database and cannot be inserted.\n'.format(str(y), email)
+                            error += 1
+                    else:
+                        msg += 'Erro row {}: The email[{}] field was not filled in correctly.\n'.format(str(y), email)
+                        error += 1
+
+            # 5
+            if error == 0:
+                temp       = sheet.cell(row=y, column = 5).value
+                if temp == None:
+                    msg += 'Error row {}: The login[{}] field was not filled in correctly.\n'.format(str(y), temp)
+                    error += 1
+                else:
+                    login = function.capitalizeWord(str(temp))
                     sql = "SELECT LOGIN FROM OPERATOR WHERE LOGIN = '{}'".format(login)
                     cur.execute(sql)
                     rows = cur.fetchall()
                     if rows:
-                        msg += 'Erro linha {}: O LOGIN[{}] já existe no banco de dados e não pode ser inserido.\n'.format(str(y), login)
+                        msg += 'Error row {}: The login[{}] already exists in the database and cannot be inserted.\n'.format(str(y), login)
                         error += 1
 
             # 6
             if error == 0:
-                password    = sheet.cell(row=y, column = 6).value
-                if password == None:
-                    password = 'Ch@nge123'
-                pass_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+                temp    = sheet.cell(row=y, column = 6).value
+                if temp == None:
+                    temp = 'Ch@nge123!'
+                if function.validadePassword(temp):
+                    password = temp
+                    pass_hash = hashlib.sha1(password.encode('utf-8')).hexdigest()
+                else:
+                    msg += 'Erro row {}: The password[{}] field was not filled in correctly.\n'.format(str(y), email)
+                    error += 1
+
 
             # 7
             if error == 0:
-                inactive    = sheet.cell(row=y, column = 8).value
-                if inactive == None:
+                temp    = sheet.cell(row=y, column = 7).value
+                if temp == None:
                     inactive = 0
+                if function.validadeNumber(str(temp)):
+                    inactive = temp
+                else:
+                    incative = 0
+
 
             if error == 0:
                 sql = "INSERT INTO OPERATOR(NAME, TELEFONE, CPF, EMAIL, LOGIN, PASSWORD, PASS_HASH, INACTIVE) VALUES('{}', {}, {}, '{}', '{}', '{}', '{}', {})".format(name, telefone, cpf, email, login, password, pass_hash, inactive)
