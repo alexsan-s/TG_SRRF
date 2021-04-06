@@ -612,3 +612,15 @@ def deleteOperator(cod):
         return 1
     except:
         return 0
+
+def deleteProduct(pk_product):
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "DELETE FROM PRODUCT WHERE PK_PRODUCT = '{}';".format(pk_product)
+        cur.execute(sql)
+        conf.commit()
+        conf.close()
+        return 1
+    except:
+        return 0
