@@ -446,148 +446,191 @@ def updateProduct(values, pk_product):
 # ! READ TABLES
 
 def readClientByPk(pk_client):
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT * FROM CLIENT WHERE PK_CLIENT = {};".format(pk_client)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT * FROM CLIENT WHERE PK_CLIENT = {};".format(pk_client)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readOperatorByPk(pk_operator):
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT * FROM OPERATOR WHERE PK_OPERATOR = {};".format(pk_operator)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT * FROM OPERATOR WHERE PK_OPERATOR = {};".format(pk_operator)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readProductByPk(pk_product):
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT * FROM PRODUCT WHERE PK_PRODUCT = {};".format(pk_product)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT * FROM PRODUCT WHERE PK_PRODUCT = {};".format(pk_product)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readClientPicture(pk_client):
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT COUNT(PICTURE) + 1 FROM CLIENT_PICTURE WHERE pk_client = '{}';".format(pk_client)
-    #Bebug
-    # print(sql)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT COUNT(PICTURE) + 1 FROM CLIENT_PICTURE WHERE pk_client = '{}';".format(pk_client)
+        #Bebug
+        # print(sql)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readClientByCpf(cpf, pk_client = None):
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT PK_CLIENT FROM CLIENT WHERE CPF = '{}'".format(cpf)
-    if pk_client:
-        sql += 'AND PK_CLIENT <> {}'.format(pk_client)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT PK_CLIENT FROM CLIENT WHERE CPF = '{}'".format(cpf)
+        if pk_client:
+            sql += 'AND PK_CLIENT <> {}'.format(pk_client)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readClientByRg(rg):
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT PK_CLIENT FROM CLIENT WHERE RG = '" + rg + "';"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT PK_CLIENT FROM CLIENT WHERE RG = '" + rg + "';"
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readClientFilter(table, filter):
-    table = function.capitalizeWord(table)
-    filter = function.capitalizeWord(filter)
-    conf = configurationElephant()
-    cur = conf.cursor()
-    if table == 'Birth':
-        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = '{}' ORDER BY NAME;".format(table, filter)
-    elif table == 'Number':
-        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = {} ORDER BY NAME;".format(table, filter)
-    else:
-        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} LIKE '%{}%' ORDER BY NAME;".format(table, filter)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        table = function.capitalizeWord(table)
+        filter = function.capitalizeWord(filter)
+        conf = configurationElephant()
+        cur = conf.cursor()
+        if table == 'Birth':
+            sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = '{}' ORDER BY NAME;".format(table, filter)
+        elif table == 'Number':
+            sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} = {} ORDER BY NAME;".format(table, filter)
+        else:
+            sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT WHERE {} LIKE '%{}%' ORDER BY NAME;".format(table, filter)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readOperatorFilter(table, filter):
-    table = function.capitalizeWord(table)
-    filter = function.capitalizeWord(filter)
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR WHERE {} LIKE '%{}%' ORDER BY NAME;".format(table, filter)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        table = function.capitalizeWord(table)
+        filter = function.capitalizeWord(filter)
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR WHERE {} LIKE '%{}%' ORDER BY NAME;".format(table, filter)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readProductFilter(table, filter):
-    table = function.capitalizeWord(table)
-    filter = function.capitalizeWord(filter)
-    conf = configurationElephant()
-    cur = conf.cursor()
-    if table == 'CODE':
-        sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE PK_PRODUCT = {} ORDER BY PRODUCT;".format(filter)
-    else:
-        sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE {} LIKE '%{}%' ORDER BY PRODUCT;".format(table, filter)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        table = function.capitalizeWord(table)
+        filter = function.capitalizeWord(filter)
+        conf = configurationElephant()
+        cur = conf.cursor()
+        if table == 'CODE':
+            sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE PK_PRODUCT = {} ORDER BY PRODUCT;".format(filter)
+        else:
+            sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE {} LIKE '%{}%' ORDER BY PRODUCT;".format(table, filter)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readAllClient():
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY NAME;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT PK_CLIENT, NAME, EMAIL FROM CLIENT ORDER BY NAME;"
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readAllProduct():
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT ORDER BY PRODUCT;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT ORDER BY PRODUCT;"
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readAllOperator():
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR ORDER BY NAME;"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT PK_OPERATOR, NAME, EMAIL, LOGIN FROM OPERATOR ORDER BY NAME;"
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readLogin(login, password):
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT PK_OPERATOR FROM OPERATOR WHERE LOGIN = '{}' AND PASS_HASH = '{}' AND INACTIVE = 0;".format(login, password)
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT PK_OPERATOR FROM OPERATOR WHERE LOGIN = '{}' AND PASS_HASH = '{}' AND INACTIVE = 0;".format(login, password)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
 
 def readPicture():
-    conf = configurationElephant()
-    cur = conf.cursor()
-    sql = "SELECT CONCAT(PK_CLIENT,'.',PICTURE,'.jpg') FROM CLIENT_PICTURE ORDER BY PK_CLIENT_PICTURE"
-    cur.execute(sql)
-    rows = cur.fetchall()
-    conf.close()
-    return rows
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = "SELECT CONCAT(PK_CLIENT,'.',PICTURE,'.jpg') FROM CLIENT_PICTURE ORDER BY PK_CLIENT_PICTURE"
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
+        
 # ! DROP TABLE
 def deleteClient(cod):
     try:
