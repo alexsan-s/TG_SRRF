@@ -5,10 +5,13 @@ def configuration():
     return con
 
 def configurationElephant():
-    con = psycopg2.connect(
-            database="dpeswhmu", 
-            user="dpeswhmu", 
-            password="zVxCxEnqIf6lK3raK-uNscFDlQKfo594",
-            host="tuffi.db.elephantsql.com", 
-            port="5432")
-    return con
+    try:
+        con = psycopg2.connect(
+                database="dpeswhmu", 
+                user="dpeswhmu", 
+                password="zVxCxEnqIf6lK3raK-uNscFDlQKfo594",
+                host="tuffi.db.elephantsql.com", 
+                port="5432")
+        return con
+    except Exception:
+        return False
