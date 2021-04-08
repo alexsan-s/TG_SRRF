@@ -209,6 +209,7 @@ def capture(pk_client, newUser = False):
     classificador   = cv2.CascadeClassifier("haarcascade/haarcascade_frontalface_default.xml")
     
     layout = [
+        [sg.Text('Chose the file'), sg.InputText(key='txtImage'), sg.FileBrowse(), sg.Submit(button_text='Submit', key ='btnSubmit')],
         [sg.Image(filename='', key='image', visible=True)],
         [sg.Button(button_text='Capture', key='btnCapture'), sg.Button(button_text='Exit', key='btnExit')],
         [sg.ProgressBar(20, orientation='h', size=(20, 20), key='progressbar', visible=newUser), sg.Text('Fotos capturadas: 0', key='txtCapture', size=(20,1), visible=newUser)], 
@@ -246,6 +247,17 @@ def capture(pk_client, newUser = False):
                 window.close()
                 sg.Popup('Capture of face has registered successfully')
                 break
+        if event == 'btnSubmit':
+            image = cv2.imread(value['txtImage'])
+            imageGrey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            facesDetectadas = classificador.detectMultiScale(imageGrey, scaleFactor = 1.11, minNeighbors=7, minSize = (30, 30))
+            print(len(facesDetectadas))
+            print(facesDetectadas)
+            for(x, y, l, a) in facesDetectadas:
+                print(x, y, l, a)
+                cv2.rectangle(image, (x, y), (x + l, y+a), (0, 0, 255), 2)
+            cv2.imshow("Faces Encontradas", image)
+            cv2.waitKey()
 
         ret, image = camera.read()
         imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
