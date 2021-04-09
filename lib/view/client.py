@@ -249,15 +249,23 @@ def capture(pk_client, newUser = False):
                 break
         if event == 'btnSubmit':
             image = cv2.imread(value['txtImage'])
-            imageGrey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            facesDetectadas = classificador.detectMultiScale(imageGrey, scaleFactor = 1.11, minNeighbors=7, minSize = (30, 30))
-            print(len(facesDetectadas))
-            print(facesDetectadas)
+            imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            facesDetectadas = classificador.detectMultiScale(imageGray, scaleFactor = 1.11, minNeighbors=7, minSize = (30, 30))
             for(x, y, l, a) in facesDetectadas:
-                print(x, y, l, a)
                 cv2.rectangle(image, (x, y), (x + l, y+a), (0, 0, 255), 2)
-            cv2.imshow("Faces Encontradas", image)
-            cv2.waitKey()
+                imageFace = cv2.resize(imageGray[y:y + a, x:x + l], (200, 200))
+                if newUser:
+                    count = count + 1
+                    if insertPicture(pk_client, count) == 1:
+                        cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(count)), imageFace)
+                        window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
+                else:
+                    if insertPicture(pk_client, lastPicture) == 1:
+                        cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(lastPicture)), imageFace)
+                        lastPicture = lastPicture + 1
+                        sg.Popup('Capture of face has registered successfully')
+                    else:
+                        sg.Popup('Fail to registerred in the database.')
 
         ret, image = camera.read()
         imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
