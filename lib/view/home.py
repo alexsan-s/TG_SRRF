@@ -37,12 +37,15 @@ def screenHome():
         if event == 'Eigenfaces':
             from view import recognition
             recognition.eigenfaces()
-        if event == 'LBPH':
-            from view import recognition
-            recognition.lbph()
         if event == 'Fisherface':
             from view import recognition
             recognition.fisherface()
+        if event == 'LBPH':
+            from view import recognition
+            recognition.lbph()
+        if event == 'Buy':
+            from view import buy
+            buy.screenBuy()
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
     window.close()

@@ -22,6 +22,9 @@ def eigenfaces():
     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
     camera = cv2.VideoCapture(0)
     user = readAllClient()
+    dataUser = {}
+    for x in user:        
+        dataUser[x[0]] = x[1]
 
     window = sg.Window('Eigenfaces', layout)
 
@@ -39,9 +42,10 @@ def eigenfaces():
             imageFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (largura, altura))
             cv2.rectangle(imagem, (x,y), (x+l, y+a), (0,0,255), 1)
             id, conhecedor = reconhecedor.predict(imageFace)
-            if(id <= len(user)):
-                window.Element('Name').update(value=user[id -1][1])
-                cv2.putText(imagem, user[id-1][1], (x,y+(a+30)),font, 2, (0,0,255))
+            print(id)
+            if id in dataUser:
+                window.Element('Name').update(value=dataUser[id])
+                cv2.putText(imagem, dataUser[id], (x,y+(a+30)),font, 2, (0,0,255))
 
         window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())
 
@@ -67,6 +71,12 @@ def fisherface():
     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
     camera = cv2.VideoCapture(0)
     user = readAllClient()
+    dataUser = {}
+    for x in user:
+        print(x[0])
+        print(x[1])
+        
+        dataUser[x[0]] = x[1]
     window = sg.Window('Fisherface', layout)
 
 
@@ -82,9 +92,10 @@ def fisherface():
             imageFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (largura, altura))
             cv2.rectangle(imagem, (x,y), (x+l, y+a), (0,0,255), 1)
             id, conhecedor = reconhecedor.predict(imageFace)
-            if(id <= len(user)):
-                window.Element('Name').update(value=user[id -1][1])
-                cv2.putText(imagem, user[id-1][1], (x,y+(a+30)),font, 2, (0,0,255))
+            print(id)
+            if id in dataUser:
+                window.Element('Name').update(value=dataUser[id])
+                cv2.putText(imagem, dataUser[id], (x,y+(a+30)),font, 2, (0,0,255))
 
         window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())
 
@@ -110,6 +121,12 @@ def lbph():
     font = cv2.FONT_HERSHEY_COMPLEX_SMALL
     camera = cv2.VideoCapture(0)
     user = readAllClient()
+    dataUser = {}
+    for x in user:
+        print(x[0])
+        print(x[1])
+        
+        dataUser[x[0]] = x[1]
     window = sg.Window('LBPH', layout)
 
 
@@ -125,9 +142,10 @@ def lbph():
             imageFace = cv2.resize(imagemCinza[y:y + a, x:x + l], (largura, altura))
             cv2.rectangle(imagem, (x,y), (x+l, y+a), (0,0,255), 1)
             id, conhecedor = reconhecedor.predict(imageFace)
-            if(id <= len(user)):
-                window.Element('Name').update(value=user[id -1][1])
-                cv2.putText(imagem, user[id-1][1], (x,y+(a+30)),font, 2, (0,0,255))
+            print(id)
+            if id in dataUser:
+                window.Element('Name').update(value=dataUser[id])
+                cv2.putText(imagem, dataUser[id], (x,y+(a+30)),font, 2, (0,0,255))
 
         window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())
 
