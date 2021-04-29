@@ -308,6 +308,7 @@ def screenClient(find = False):
         toolbar_menu = [
             ['File', ['New', 'Edit', 'Delete', 'Exit']],
             ['Insert', ['Capture']],
+            ['View', ['Purchases']],
         ]
     else:
         toolbar_menu = [
