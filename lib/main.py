@@ -1,9 +1,9 @@
-from view import login
-# from view import buy
+# from view import login
+from view import client
 # from view import importData
 # * Begin of the code
-login.login()
+# login.login()
 
-# buy.screenBuy()
+client.screenClient()
 # importData.importData()
 
