@@ -295,11 +295,31 @@ def capture(pk_client, newUser = False):
     camera.release()
     window.close()
 
+def purchases(pk_client):
+    purchases_date = readPurchases(pk_client)
+    listDate = []
+    listProduct = []
+    for row in purchases_date:
+        listDate.append(row[1])
+    toolbar_menu = [
+            ['File', ['Exit']],
+        ]
+    layout = [
+        [sg.Menu(toolbar_menu)],
+        [sg.Listbox(values = listDate, size=(30,100), default_values=(listDate[0],),), sg.Text('oi')],
+    ]
 
+    window = sg.Window('Client', layout,size=(800,500))
+
+    while True:
+        event, value = window.read(timeout=20)
+        if event == 'Exit' or event == sg.WIN_CLOSED:
+            break
+        
+    window.close()
 #
 # *     Function that going to use to see the screen of CLIENT
 # TODO: Create the function that if right clicked show an options for to do
-# TODO: Update the screen when delete an client or when create a new client
 #
 def screenClient(find = False):
 
@@ -371,6 +391,8 @@ def screenClient(find = False):
         if event == 'Submit':
             pk_client = window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]]
             break
+        if event == 'Purchases':
+            purchases(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
     window.close()
     if find:
         return pk_client
