@@ -22,7 +22,7 @@ def screen(find = False):
         ]
     else:
         dataRegister = [
-            [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=30, justification='left', key='tbProduct', enable_events=True)]
+            [sg.Table(values=data, headings=header, num_rows=15, row_height=20, max_col_width=60, justification='left', key='tbProduct', enable_events=True, auto_size_columns=False, col_widths=[5,30,40])]
         ]
         if find:
             dataRegister.append([sg.Submit()])
