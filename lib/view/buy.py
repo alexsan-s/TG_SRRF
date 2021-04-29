@@ -72,7 +72,7 @@ def screenBuy():
             try:
                 if not selectedClient:
                     selectedClient = crud.readClientByPk(values['IClient'])[0]
-                result = crud.insertPurchases(selectedClient[0], productAdd)
+                result = crud.insertClientProduct(selectedClient[0], productAdd)
                 if result == 1:
                     sg.Popup('Register suceffuly')
                 else:
