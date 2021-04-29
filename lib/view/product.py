@@ -1,12 +1,17 @@
 import PySimpleGUI as sg
 from controller.database.crud import *
 
-def screen():
+def screen(find = False):
 
     # ! toolbar
-    toolbar_menu = [
-        ['File', ['New', 'Edit', 'Delete', 'Exit']],
-    ]
+    if not find:
+        toolbar_menu = [
+            ['File', ['New', 'Edit', 'Delete', 'Exit']],
+        ]
+    else:
+        toolbar_menu = [
+            ['File', ['Exit']],
+        ]
     data = readAllProduct()
     header = ['Code','Name', 'Description']
     
@@ -19,6 +24,8 @@ def screen():
         dataRegister = [
             [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=30, justification='left', key='tbProduct', enable_events=True)]
         ]
+        if find:
+            dataRegister.append([sg.Submit()])
 
     layout = [
         [sg.Menu(toolbar_menu)],
@@ -53,7 +60,15 @@ def screen():
         if event == 'Clear':
             data = readAllProduct()
             window.Element('tbProduct').update(values=data)
+        if event == 'Submit':
+            pk_client = window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]]
+            break
     window.close()
+    if find:
+        try:
+            return pk_client
+        except:
+            return None
 
 
 #

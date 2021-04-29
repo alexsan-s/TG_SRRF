@@ -301,13 +301,18 @@ def capture(pk_client, newUser = False):
 # TODO: Create the function that if right clicked show an options for to do
 # TODO: Update the screen when delete an client or when create a new client
 #
-def screenClient():
+def screenClient(find = False):
 
     # ! toolbar
-    toolbar_menu = [
-        ['File', ['New', 'Edit', 'Delete', 'Exit']],
-        ['Insert', ['Capture']],
-    ]
+    if not find:
+        toolbar_menu = [
+            ['File', ['New', 'Edit', 'Delete', 'Exit']],
+            ['Insert', ['Capture']],
+        ]
+    else:
+        toolbar_menu = [
+            ['File', ['Exit']],
+        ]
     data = readAllClient()
     header = ['Code','Name', 'Email']
     
@@ -318,8 +323,10 @@ def screenClient():
         ]
     else:
         dataRegister = [
-            [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=40, justification='left', key='tbClient', enable_events=True)]
+            [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=40, justification='left', key='tbClient', enable_events=True)],
         ]
+        if find:
+            dataRegister.append([sg.Submit()])
 
     layout = [
         [sg.Menu(toolbar_menu)],
@@ -360,5 +367,10 @@ def screenClient():
             window.Element('btnCalendar').Update(disabled=False)
         else:
             window.Element('btnCalendar').Update(disabled=True)
+        if event == 'Submit':
+            pk_client = window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]]
+            break
     window.close()
+    if find:
+        return pk_client
 
