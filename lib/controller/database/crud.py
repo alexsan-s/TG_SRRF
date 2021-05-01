@@ -196,11 +196,17 @@ def createProduct(values):
             if description:
                 description = values['IDescription']
             else:
-                return -2            
+                return -2
+        #3
+        promotion = values['cbPromotion']
+        if promotion:
+            promotion = 1
+        else:
+            promotion = 0
 
         conf = configurationElephant()
         cur = conf.cursor()
-        sql = "INSERT INTO PRODUCT(PRODUCT, DESCRIPTION, INACTIVE) VALUES('{}', '{}', {})".format(product, description, 0)
+        sql = "INSERT INTO PRODUCT(PRODUCT, DESCRIPTION, INACTIVE, PROMOTION) VALUES('{}', '{}', {}, {})".format(product, description, 0, promotion)
         #Debug
         # print(sql)
         cur.execute(sql)
@@ -469,9 +475,16 @@ def updateProduct(values, pk_product):
         else:
             inactive = 0
 
+        #4
+        promotion = values['cbPromotion']
+        if promotion:
+            promotion = 1
+        else:
+            promotion = 0
+
         conf = configurationElephant()
         cur = conf.cursor()
-        sql = "UPDATE PRODUCT SET PRODUCT = '{}', DESCRIPTION = '{}', INACTIVE = '{}' WHERE PK_PRODUCT = {}".format(product, description, inactive, pk_product)
+        sql = "UPDATE PRODUCT SET PRODUCT = '{}', DESCRIPTION = '{}', INACTIVE = '{}', PROMOTION = {} WHERE PK_PRODUCT = {}".format(product, description, inactive, promotion, pk_product)
         #Debug
         # print(sql)
         cur.execute(sql)
@@ -599,6 +612,8 @@ def readProductFilter(table, filter):
         cur = conf.cursor()
         if table == 'CODE':
             sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE PK_PRODUCT = {} ORDER BY PRODUCT;".format(filter)
+        elif table == 'PROMOTION':
+            sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE {} = {} ORDER BY PRODUCT;".format(table, filter)
         else:
             sql = "SELECT PK_PRODUCT, PRODUCT, DESCRIPTION FROM PRODUCT WHERE {} LIKE '%{}%' ORDER BY PRODUCT;".format(table, filter)
         cur.execute(sql)
