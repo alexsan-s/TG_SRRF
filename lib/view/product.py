@@ -31,7 +31,7 @@ def screen(find = False):
         [sg.Menu(toolbar_menu)],
         [sg.Column(dataRegister)],
         [sg.Frame(title='Filter', layout=[
-            [sg.InputCombo(['Code', 'Product'], key='cbmFilter', default_value = 'Product'), sg.Input('', key='lblInput')],
+            [sg.InputCombo(['Code', 'Product', 'Promotion'], key='cbmFilter', default_value = 'Product'), sg.Input('', key='lblInput')],
             [sg.Button(button_text='Search'), sg.Button(button_text='Clear')]
         ])]
     ]
@@ -81,12 +81,18 @@ def productNewOld(pk_product = None):
         product         = data[0][1]
         description     = data[0][2]
         inactive        = data[0][3]
+        promotion       = data[0][4]
+        if promotion == 1:
+            promotionState = True
+        else:
+            promotionState = False
         rdInactive      = [sg.Checkbox('Inactive', default=inactive, key='IInactive')]
         btnInsertUpdate = 'Update'
         title           = 'Edit Product {}'.format(product)
     else:
         product            = ''
         description        = ''
+        promotionState     = False
         rdInactive         = []
         btnInsertUpdate = 'Register'
         title           = 'New Product'
@@ -95,6 +101,7 @@ def productNewOld(pk_product = None):
     layout = [
         [sg.Text("Product", size=(10,1), key='lblProduct'), sg.Input(product, key = 'IProduct')],
         [sg.Text("Description", size=(10,1), key='lblDescription'), sg.Multiline(default_text = description, key='IDescription')],
+        [sg.Checkbox("Promotion", default=promotionState, key='cbPromotion')],
         rdInactive,
         [sg.HorizontalSeparator()],
         [sg.Button(button_text=btnInsertUpdate), sg.Exit(button_text="Cancel")],
@@ -107,7 +114,6 @@ def productNewOld(pk_product = None):
         event, values = window.Read(timeout=20, timeout_key='timeout')
         if event is None or event == 'Cancel':  
             break
-        
         if event == 'Register':
             created = createProduct(values)
             if created == 1:
