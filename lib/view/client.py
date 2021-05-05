@@ -272,7 +272,7 @@ def capture(pk_client, newUser = False):
         facesDetectadas = classificador.detectMultiScale(imageGray, scaleFactor=1.5, minSize=(150, 150))
         if ret:
             for(x, y, l, a,) in facesDetectadas:
-                if(np.average(imageGray) > 110):
+                # if(np.average(imageGray) > 110):
                     cv2.rectangle(image, (x, y), (x+l, y+a), (0, 0, 255), 2)
                     imageFace = cv2.resize(imageGray[y:y + a, x:x + l], (200, 200))
                     if event == 'btnCapture':
