@@ -466,8 +466,9 @@ def updateProduct(values, pk_product):
             if description:
                 description = values['IDescription']
             else:
-                return -2  
-
+                return -2 
+        else: 
+            description = ''
         #3
         inactive = values['IInactive']
         if inactive:
@@ -692,13 +693,34 @@ def readPurchases(pk_client, filterDate = False):
             dateNow = date.today()
             sql = "SELECT PK_PURCHASES, PURCHASES_DATE FROM PURCHASES WHERE PK_CLIENT = {} AND PURCHASES_DATE = '{}'".format(pk_client, dateNow)    
         else:
-            sql = "SELECT PK_PURCHASES, PURCHASES_DATE FROM PURCHASES WHERE PK_CLIENT = {} ORDER BY PURCHASES_DATE".format(pk_client)
+            sql = "SELECT PK_PURCHASES, PURCHASES_DATE FROM PURCHASES WHERE PK_CLIENT = {} ORDER BY PK_PURCHASES DESC".format(pk_client)
         cur.execute(sql)
         rows = cur.fetchall()
         conf.close()
         return rows
     except Exception:
         return []
+
+def readPurchasesPromotionByPKClient(pk_client):
+    try:
+        conf = configurationElephant()
+        cur = conf.cursor()
+        sql = """   SELECT
+                        PRODUCT.PK_PRODUCT
+                    FROM
+                        PRODUCT
+                        RIGHT JOIN CLIENT_PRODUCT ON PRODUCT.PK_PRODUCT = CLIENT_PRODUCT.PK_PRODUCT
+                        RIGHT JOIN PURCHASES ON CLIENT_PRODUCT.PK_PURCHASES = PURCHASES.PK_PURCHASES
+                    WHERE
+                        PURCHASES.PK_CLIENT = {}
+                        AND PRODUCT.PROMOTION = 1""".format(pk_client)
+        cur.execute(sql)
+        rows = cur.fetchall()
+        conf.close()
+        return rows
+    except Exception:
+        return []
+
 # ! DROP TABLE
 def deleteClient(cod):
     try:
