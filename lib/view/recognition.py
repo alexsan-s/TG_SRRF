@@ -169,7 +169,7 @@ def lbph():
             if nameProduct:
                 msg = ""
                 for row in nameProduct:
-                    msg = msg + '{}\n'.format(row[1])
+                    msg = msg + '{}\n'.format(row[0][1])
                 sg.ScrolledTextBox('{}\n'.format(msg))
             break 
         window.FindElement('image').Update(data=cv2.imencode('.png', imagem)[1].tobytes())
