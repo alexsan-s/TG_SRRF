@@ -6,4 +6,3 @@ from view import home
 
 home.screenHome()()
 # importData.importData()
-
