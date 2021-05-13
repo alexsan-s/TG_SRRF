@@ -301,13 +301,28 @@ def purchases(pk_client):
     listProduct = []
     for row in purchases_date:
         listDate.append(row[1])
+
+    header = ['Code','Product', 'Qtd']
+    data = []
     toolbar_menu = [
             ['File', ['Exit']],
         ]
     layout = [
         [sg.Menu(toolbar_menu)],
-        [sg.Listbox(values = listDate, size=(30,100), default_values=(listDate[0],),), sg.Text('oi')],
+        [
+            sg.Column(
+                [
+                    [sg.Listbox(values = listDate, size=(30,100), key='lbList', enable_events=True)]
+                ]
+            ),
+            sg.Column(
+                [
+                    [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=40, justification='left', key='tbProduct', enable_events=True,auto_size_columns=False, col_widths=[10, 30, 10])]
+                ]
+            )
+        ],
     ]
+
 
     window = sg.Window('Client', layout,size=(800,500))
 
@@ -315,6 +330,9 @@ def purchases(pk_client):
         event, value = window.read(timeout=20)
         if event == 'Exit' or event == sg.WIN_CLOSED:
             break
+        if event == 'lbList':
+            print(value['lbList'])
+
         
     window.close()
 #
