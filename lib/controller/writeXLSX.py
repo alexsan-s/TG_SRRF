@@ -1,6 +1,6 @@
 from openpyxl import Workbook
 from tkinter import *
-import tkinter.filedialog
+from tkinter import filedialog
 
 def writeXLSX(typeXLSX):    
     sourcePath = filedialog.askdirectory()

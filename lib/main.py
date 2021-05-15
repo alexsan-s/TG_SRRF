@@ -3,7 +3,8 @@ from view import home
 # from view import importData
 # * Begin of the code
 # login.login()
-
-home.screenHome()()
+# try:
+home.screenHome()
+# except:
+#     print('Exit')
 # importData.importData()
-
