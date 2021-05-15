@@ -79,6 +79,12 @@ def screenBuy():
                     sg.Popup('Fail to register')
             except:
                 sg.Popup('Fail to register')
+        if event == "Delete Product":
+            try:
+                del productAdd[window.Element('tbProduct').SelectedRows[0]]
+                window.Element('tbProduct').Update(values = productAdd)
+            except:
+                sg.Popup('Select the product')
         if event == 'btnFindClient':
             from view import client
             selectedClient = client.screenClient(find = True)
