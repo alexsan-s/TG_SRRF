@@ -184,27 +184,30 @@ def screenOperator():
     window = sg.Window('Operator', layout,size=(800,500))
 
     while True:
-        event, value = window.read(timeout=20)
-        
-        if event == 'New':
-            operatorNewOld()
-            data = readAllOperator()
-            window.Element('tbOperator').update(values=data)
-        if event == 'Edit':
-            operatorNewOld(window.Element('tbOperator').Values[window.Element('tbOperator').SelectedRows[0]][0])
-            data = readAllOperator()
-            window.Element('tbOperator').update(values=data)
-        if event == 'Exit' or event == sg.WIN_CLOSED:
-            break
-        if event == 'Delete':
-            if deleteOperator(window.Element('tbOperator').Values[window.Element('tbOperator').SelectedRows[0]][0]) == 1:
+        try:
+            event, value = window.read(timeout=20)
+            
+            if event == 'New':
+                operatorNewOld()
                 data = readAllOperator()
                 window.Element('tbOperator').update(values=data)
-        if event == 'Search':
-                data = readOperatorFilter(value['cbmFilter'], value['lblInput'])
+            if event == 'Edit':
+                operatorNewOld(window.Element('tbOperator').Values[window.Element('tbOperator').SelectedRows[0]][0])
+                data = readAllOperator()
                 window.Element('tbOperator').update(values=data)
-        if event == 'Clear':
-            data = readAllOperator()
-            window.Element('tbOperator').update(values=data)
+            if event == 'Exit' or event == sg.WIN_CLOSED:
+                break
+            if event == 'Delete':
+                if deleteOperator(window.Element('tbOperator').Values[window.Element('tbOperator').SelectedRows[0]][0]) == 1:
+                    data = readAllOperator()
+                    window.Element('tbOperator').update(values=data)
+            if event == 'Search':
+                    data = readOperatorFilter(value['cbmFilter'], value['lblInput'])
+                    window.Element('tbOperator').update(values=data)
+            if event == 'Clear':
+                data = readAllOperator()
+                window.Element('tbOperator').update(values=data)
+        except IndexError:
+            sg.Popup("Select a operator")
     window.close()
 

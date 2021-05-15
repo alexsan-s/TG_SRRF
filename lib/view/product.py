@@ -38,31 +38,36 @@ def screen(find = False):
     window = sg.Window('Product', layout,size=(800,500))
 
     while True:
-        event, value = window.read(timeout=20)
-        
-        if event == 'New':
-            productNewOld()
-            data = readAllProduct()
-            window.Element('tbProduct').update(values=data)
-        if event == 'Edit':
-            productNewOld(window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]][0])
-            data = readAllProduct()
-            window.Element('tbProduct').update(values=data)
-        if event == 'Exit' or event == sg.WIN_CLOSED:
-            break
-        if event == 'Delete':
-            if deleteProduct(window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]][0]) == 1:
+        try:
+            event, value = window.read(timeout=20)
+            
+            if event == 'New':
+                productNewOld()
                 data = readAllProduct()
                 window.Element('tbProduct').update(values=data)
-        if event == 'Search':
-                data = readProductFilter(value['cbmFilter'], value['lblInput'])
+            if event == 'Edit':
+                productNewOld(window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]][0])
+                data = readAllProduct()
                 window.Element('tbProduct').update(values=data)
-        if event == 'Clear':
-            data = readAllProduct()
-            window.Element('tbProduct').update(values=data)
-        if event == 'Submit':
-            pk_client = window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]]
-            break
+            if event == 'Exit' or event == sg.WIN_CLOSED:
+                break
+            if event == 'Delete':
+                if deleteProduct(window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]][0]) == 1:
+                    data = readAllProduct()
+                    window.Element('tbProduct').update(values=data)
+                else:
+                    sg.Popup('Fail to delete')
+            if event == 'Search':
+                    data = readProductFilter(value['cbmFilter'], value['lblInput'])
+                    window.Element('tbProduct').update(values=data)
+            if event == 'Clear':
+                data = readAllProduct()
+                window.Element('tbProduct').update(values=data)
+            if event == 'Submit':
+                pk_client = window.Element('tbProduct').Values[window.Element('tbProduct').SelectedRows[0]]
+                break
+        except IndexError:
+            sg.Popup("Select a product")
     window.close()
     if find:
         try:

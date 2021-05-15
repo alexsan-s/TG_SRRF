@@ -248,24 +248,28 @@ def capture(pk_client, newUser = False):
                 sg.Popup('Capture of face has registered successfully')
                 break
         if event == 'btnSubmit':
-            image = cv2.imread(value['txtImage'])
-            imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            facesDetectadas = classificador.detectMultiScale(imageGray, scaleFactor = 1.11, minNeighbors=7, minSize = (30, 30))
-            for(x, y, l, a) in facesDetectadas:
-                cv2.rectangle(image, (x, y), (x + l, y+a), (0, 0, 255), 2)
-                imageFace = cv2.resize(imageGray[y:y + a, x:x + l], (200, 200))
-                if newUser:
-                    count = count + 1
-                    if insertPicture(pk_client, count) == 1:
-                        cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(count)), imageFace)
-                        window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
-                else:
-                    if insertPicture(pk_client, lastPicture) == 1:
-                        cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(lastPicture)), imageFace)
-                        lastPicture = lastPicture + 1
-                        sg.Popup('Capture of face has registered successfully')
+            try:
+                path = value['txtImage']
+                image = cv2.imread(path)
+                imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                facesDetectadas = classificador.detectMultiScale(imageGray, scaleFactor = 1.11, minNeighbors=7, minSize = (30, 30))
+                for(x, y, l, a) in facesDetectadas:
+                    cv2.rectangle(image, (x, y), (x + l, y+a), (0, 0, 255), 2)
+                    imageFace = cv2.resize(imageGray[y:y + a, x:x + l], (200, 200))
+                    if newUser:
+                        count = count + 1
+                        if insertPicture(pk_client, count) == 1:
+                            cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(count)), imageFace)
+                            window.FindElement('txtCapture').update(value = 'Pictures captured: {}'.format(count))
                     else:
-                        sg.Popup('Fail to registerred in the database.')
+                        if insertPicture(pk_client, lastPicture) == 1:
+                            cv2.imwrite("./assets/{}.{}.jpg".format(str(pk_client),str(lastPicture)), imageFace)
+                            lastPicture = lastPicture + 1
+                            sg.Popup('Capture of face has registered successfully')
+                        else:
+                            sg.Popup('Fail to registerred in the database.')
+            except:
+                sg.Popup('Fail to read the image.')
 
         ret, image = camera.read()
         imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -378,39 +382,42 @@ def screenClient(find = False):
     window = sg.Window('Client', layout,size=(800,500))
 
     while True:
-        event, value = window.read(timeout=20)
-        
-        if event == 'New':
-            clientNewOld()
-            data = readAllClient()
-            window.Element('tbClient').update(values=data)
-        if event == 'Edit':
-            clientNewOld(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
-            data = readAllClient()
-            window.Element('tbClient').update(values=data)
-        if event == 'Exit' or event == sg.WIN_CLOSED:
-            break
-        if event == 'Delete':
-            if deleteClient(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0]) == 1:
+        try:
+            event, value = window.read(timeout=20)
+            
+            if event == 'Exit' or event == sg.WIN_CLOSED:   
+                break
+            if event == 'New':
+                clientNewOld()
                 data = readAllClient()
                 window.Element('tbClient').update(values=data)
-        if event == 'Capture':
-            capture(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
-        if event == 'Search':
-                data = readClientFilter(value['cbmFilter'], value['lblInput'])
+            if event == 'Edit':
+                clientNewOld(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
+                data = readAllClient()
                 window.Element('tbClient').update(values=data)
-        if event == 'Clear':
-            data = readAllClient()
-            window.Element('tbClient').update(values=data)
-        if value['cbmFilter'] == 'Birth':
-            window.Element('btnCalendar').Update(disabled=False)
-        else:
-            window.Element('btnCalendar').Update(disabled=True)
-        if event == 'Submit':
-            pk_client = window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]]
-            break
-        if event == 'Purchases':
-            purchases(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
+            if event == 'Delete':
+                if deleteClient(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0]) == 1:
+                    data = readAllClient()
+                    window.Element('tbClient').update(values=data)
+            if event == 'Capture':
+                capture(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
+            if event == 'Search':
+                    data = readClientFilter(value['cbmFilter'], value['lblInput'])
+                    window.Element('tbClient').update(values=data)
+            if event == 'Clear':
+                data = readAllClient()
+                window.Element('tbClient').update(values=data)
+            if value['cbmFilter'] == 'Birth':
+                window.Element('btnCalendar').Update(disabled=False)
+            else:
+                window.Element('btnCalendar').Update(disabled=True)
+            if event == 'Submit':
+                pk_client = window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]]
+                break
+            if event == 'Purchases':
+                purchases(window.Element('tbClient').Values[window.Element('tbClient').SelectedRows[0]][0])
+        except IndexError:
+            sg.Popup("Select a client")
     window.close()
     if find:
         return pk_client

@@ -42,12 +42,16 @@ def screen():
     window = sg.Window('Images', layout,size=(800,500))
 
     while True:
-        event, value = window.read(timeout=20)
-        
-        if event == 'Exit' or event == sg.WIN_CLOSED:
-            break
-        if value['lbData']:
-            img = cv2.imread('assets/{}'.format(value['lbData'][0][0]), 0) 
-            window.FindElement('image').Update(data=cv2.imencode('.png', img)[1].tobytes())
+            event, value = window.read(timeout=20)
+            
+            if event == 'Exit' or event == sg.WIN_CLOSED:
+                break
+            if value['lbData']:
+                img = cv2.imread('assets/{}'.format(value['lbData'][0][0]), 0) 
+                try:
+                    window.FindElement('image').Update(data=cv2.imencode('.png', img)[1].tobytes())
+                except:
+                    del img
+                    sg.Popup("Can't found the image")
     window.close()
 
