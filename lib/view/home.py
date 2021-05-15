@@ -10,12 +10,17 @@ def screenHome():
         [sg.Menu(toolbar_menu)],
     ]
     window = sg.Window('Menu', layout, size=(800,500)).Finalize()
-    window.Maximize()
 
     while True:
         event, value = window.read()
         
         # * Screen main
+        if event == "Logout":   
+            from view import login         
+            yesNo = sg.popup_yes_no("Are you sure?", title='Logout',)
+            if yesNo == "Yes":
+                window.close()
+                login.login()
         if event == 'Client':
             from view import client
             client.screenClient()
