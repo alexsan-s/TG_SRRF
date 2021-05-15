@@ -14,7 +14,6 @@ def importData():
         [sg.Button(button_text='Import')],
     ]
     window = sg.Window('Import', layout).Finalize()
-    window.Maximize()
 
     while True:
         event, value = window.read()
