@@ -366,7 +366,7 @@ def screenClient(find = False):
         ]
     else:
         dataRegister = [
-            [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=40, justification='left', key='tbClient', enable_events=True)],
+            [sg.Table(values=data, headings=header, num_rows=18, row_height=20, max_col_width=40, justification='left', key='tbClient', enable_events=True, auto_size_columns=False, col_widths=[5, 40, 35])],
         ]
         if find:
             dataRegister.append([sg.Submit()])
@@ -420,5 +420,8 @@ def screenClient(find = False):
             sg.Popup("Select a client")
     window.close()
     if find:
-        return pk_client
+        try:
+            return pk_client
+        except UnboundLocalError:
+            return None
 

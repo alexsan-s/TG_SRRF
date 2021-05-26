@@ -191,6 +191,7 @@ def createProduct(values):
             return -1
         
         #2 
+        description = ""
         if len(values['IDescription']) >= 3:
             description = function.capitalizeWord(values['IDescription'])
             if description:
@@ -705,7 +706,7 @@ def readPurchasesPromotionByPKClient(pk_client):
     try:
         conf = configurationElephant()
         cur = conf.cursor()
-        sql = """   SELECT
+        sql = """   SELECT DISTINCT
                         PRODUCT.PK_PRODUCT
                     FROM
                         PRODUCT

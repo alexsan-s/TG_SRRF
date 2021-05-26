@@ -88,7 +88,8 @@ def screenBuy():
         if event == 'btnFindClient':
             from view import client
             selectedClient = client.screenClient(find = True)
-            window.Element('IClient').Update(value=selectedClient[1])
+            if selectedClient != None:
+                window.Element('IClient').Update(value=selectedClient[1])
         if event == 'btnFindProduct':
             from view import product
             selectedProduct = product.screen(find = True)
