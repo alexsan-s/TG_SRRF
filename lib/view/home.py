@@ -15,6 +15,9 @@ def screenHome():
         event, value = window.read()
         
         # * Screen main
+        if event == 'Setting':
+            from view import setting
+            setting.screen()
         if event == "Logout":   
             from view import login         
             yesNo = sg.popup_yes_no("Are you sure?", title='Logout',)
@@ -51,6 +54,10 @@ def screenHome():
         if event == 'Buy':
             from view import buy
             buy.screenBuy()
-        if event == 'Exit' or event == sg.WIN_CLOSED:
+        if event == 'Exit':
+            yesNo = sg.popup_yes_no("Are you sure?", title='Logout',)
+            if yesNo == "Yes":
+                break
+        if event == sg.WIN_CLOSED:
             break
     window.close()
