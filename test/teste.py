@@ -1,8 +1,8 @@
 from datetime import datetime
 
-date_time_str = '18/09/19 01:55:19.410430'
+date_time_str = '2021-07-01 21:06:16.383707'
 
-date_time_obj = datetime.strptime(date_time_str, '%d/%m/%y %H:%M:%S.%f')
+date_time_obj = datetime.strptime(date_time_str, '%Y-%m-%d %H:%M:%S.%f')
 
 
 print ("The type of the date is now",  type(date_time_obj))
