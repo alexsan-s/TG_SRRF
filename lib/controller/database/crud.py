@@ -249,18 +249,17 @@ def insertPurchases(pk_client):
 
 def insertClientProduct(pk_client, product):
     try:
-        pk_purchases = readPurchases(pk_client, True)
-        if not pk_purchases:
-            insertPurchases(pk_client)
-            pk_purchases = readPurchases(pk_client)
+        from controller import globalPy
+        from datetime import datetime
+        pkUser = globalPy.pkUser
+        date = datetime.now().date()
         conf = configurationElephant()
         cur = conf.cursor()
         for row in product:
             for row2 in range(0, row[2]):
-                print(row[0])
-                sql = "INSERT INTO CLIENT_PRODUCT(PK_PURCHASES, PK_PRODUCT) VALUES({}, {})".format(pk_purchases[0][0], row[0])
+                sql = "INSERT INTO CLIENT_PRODUCT(PK_CLIENT, PK_PRODUCT, PK_OPERATOR, DATE_BUY) VALUES({}, {}, {}, '{}')".format(pk_client, row[0], pkUser, date)
                 #Debug
-                print(sql)
+                # print(sql)
 
                 cur.execute(sql)
                 conf.commit()
