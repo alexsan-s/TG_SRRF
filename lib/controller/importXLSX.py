@@ -1,4 +1,3 @@
-import openpyxl
 import hashlib
 import pandas as pd
 from datetime import datetime
@@ -7,7 +6,7 @@ from controller import function
 
 def importXLSX(table, file_path):
     try:
-        sheet = pd.read_excel(file_path)
+        sheet = pd.read_excel(file_path, dtype = str)
         # wb = openpyxl.load_workbook(filename=file_path, read_only=True)
 
         # sheet = wb.active
@@ -246,7 +245,7 @@ def importClient(sheet):
                 
             # 4
             birth       = row[3]
-            
+
             # 5
             sex         = row[4]
             
