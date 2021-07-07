@@ -1,10 +1,12 @@
-# from view import login
-from view import home
+from view import login
+# from view import home
 # from view import importData
 # * Begin of the code
-# login.login()
+global pkUser
+login.login()
+
 # try:
-home.screenHome()
+# home.screenHome()
 # except:
 #     print('Exit')
 # importData.importData()
