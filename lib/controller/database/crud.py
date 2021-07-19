@@ -689,11 +689,31 @@ def readPurchases(pk_client, filterDate = False):
         conf = configurationElephant()
         cur = conf.cursor()
         if filterDate:
-            from datetime import date
-            dateNow = date.today()
-            sql = "SELECT PK_PURCHASES, PURCHASES_DATE FROM PURCHASES WHERE PK_CLIENT = {} AND PURCHASES_DATE = '{}'".format(pk_client, dateNow)    
+            from datetime import datetime
+            date_day = filterDate[0].strftime('%Y-%m-%d')
+            sql = """SELECT
+                        CLIENT_PRODUCT.PK_PRODUCT,
+                        PRODUCT.PRODUCT,
+                        COUNT(CLIENT_PRODUCT.PK_PRODUCT)
+                    FROM 
+                        CLIENT_PRODUCT
+                        LEFT JOIN PRODUCT ON (CLIENT_PRODUCT.PK_PRODUCT = PRODUCT.PK_PRODUCT)
+                    WHERE 
+                        CLIENT_PRODUCT.PK_CLIENT = {}
+                        AND
+                        CLIENT_PRODUCT.DATE_BUY = '{}'
+                    GROUP BY
+                        CLIENT_PRODUCT.DATE_BUY,
+                        CLIENT_PRODUCT.pk_product,
+                        PRODUCT.PRODUCT""".format(pk_client, date_day)
         else:
-            sql = "SELECT PK_PURCHASES, PURCHASES_DATE FROM PURCHASES WHERE PK_CLIENT = {} ORDER BY PK_PURCHASES DESC".format(pk_client)
+            sql = """SELECT 
+                        DATE_BUY
+                    FROM 
+                        CLIENT_PRODUCT 
+                    WHERE 
+                        PK_CLIENT = {}
+                    GROUP BY DATE_BUY""".format(pk_client)
         cur.execute(sql)
         rows = cur.fetchall()
         conf.close()
