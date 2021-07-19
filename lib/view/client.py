@@ -304,7 +304,7 @@ def purchases(pk_client):
     listDate = []
     listProduct = []
     for row in purchases_date:
-        listDate.append(row[1])
+        listDate.append(row[0])
 
     header = ['Code','Product', 'Qtd']
     data = []
@@ -336,6 +336,8 @@ def purchases(pk_client):
             break
         if event == 'lbList':
             print(value['lbList'])
+            listProduct = readPurchases(pk_client, value['lbList'])
+            window.Element('tbProduct').Update(values = listProduct)
 
         
     window.close()
