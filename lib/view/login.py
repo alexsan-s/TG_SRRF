@@ -45,7 +45,6 @@ def searchLogin(value):
         else:
             from controller import globalPy
             globalPy.pkUser = row[0][0]
-            print(globalPy.pkUser)
             return 1
     except:
         return 0

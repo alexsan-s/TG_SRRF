@@ -51,6 +51,9 @@ def screenHome():
         if event == 'LBPH':
             from view import recognition
             recognition.lbph()
+        if event == 'Test Algorithms':
+            from view import recognition
+            recognition.test()
         if event == 'Buy':
             from view import buy
             buy.screenBuy()
